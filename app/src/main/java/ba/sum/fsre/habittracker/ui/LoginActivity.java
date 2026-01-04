@@ -9,6 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
+import ba.sum.fsre.habittracker.MainActivity;
 import ba.sum.fsre.habittracker.R;
 import ba.sum.fsre.habittracker.api.SupabaseAuthApi;
 import ba.sum.fsre.habittracker.api.SupabaseClient;
@@ -76,7 +77,12 @@ public class LoginActivity extends AppCompatActivity {
                     String token = response.body().getAccessToken();
                     String userId = response.body().getUserId();
 
-                    Toast.makeText(LoginActivity.this, "Login uspješan. ID: " + userId, Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    intent.putExtra("USER_ID", userId);
+                    startActivity(intent);
+                    finish();
+
+
 
 
 
