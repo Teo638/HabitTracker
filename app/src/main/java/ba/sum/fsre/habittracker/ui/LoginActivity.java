@@ -15,6 +15,7 @@ import ba.sum.fsre.habittracker.api.SupabaseAuthApi;
 import ba.sum.fsre.habittracker.api.SupabaseClient;
 import ba.sum.fsre.habittracker.model.LoginRequest;
 import ba.sum.fsre.habittracker.model.UserResponse;
+import ba.sum.fsre.habittracker.utils.SessionManager;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -76,6 +77,9 @@ public class LoginActivity extends AppCompatActivity {
 
                     String token = response.body().getAccessToken();
                     String userId = response.body().getUserId();
+
+                    SessionManager sessionManager = new SessionManager(LoginActivity.this);
+                    sessionManager.saveSession(token, userId);
 
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     intent.putExtra("USER_ID", userId);
