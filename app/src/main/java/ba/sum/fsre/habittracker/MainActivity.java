@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
+import ba.sum.fsre.habittracker.ui.HabitsFragment;
 import ba.sum.fsre.habittracker.ui.LoginActivity;
 import ba.sum.fsre.habittracker.utils.SessionManager;
 
@@ -22,6 +23,10 @@ public class MainActivity extends AppCompatActivity {
         sessionManager = new SessionManager(this);
 
         btnLogout = findViewById(R.id.btnLogout);
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragmentContainer, new HabitsFragment())
+                .commit();
 
 
         btnLogout.setOnClickListener(v -> {
