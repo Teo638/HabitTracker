@@ -71,6 +71,7 @@ private void loadHabits() {
     List<Habit> testHabits = new ArrayList<>();
     testHabits.add(new Habit("Popiti vodu"));
     testHabits.add(new Habit("Vježbati 30 minuta"));
+    testHabits.add(new Habit("Nazvati mamu"));
     testHabits.add(new Habit("Pročitati 10 stranica knjige"));
 
     adapter.setHabits(testHabits);
