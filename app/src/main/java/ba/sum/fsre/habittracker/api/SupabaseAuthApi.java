@@ -20,4 +20,10 @@ public interface SupabaseAuthApi {
             @Body LoginRequest request,
             @Query("grant_type") String grantType
     );
+
+    @POST
+    Call<UserResponse> registerUser(
+            @Url String url,
+            @Body LoginRequest request
+    );
 }

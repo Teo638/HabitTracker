@@ -1,8 +1,11 @@
 package ba.sum.fsre.habittracker.ui;
 
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -20,6 +23,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText etEmail, etPassword;
     private Button btnLogin;
+    private TextView tvRegisterLink;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +34,7 @@ public class LoginActivity extends AppCompatActivity {
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnLogin);
+        tvRegisterLink = findViewById(R.id.tvRegisterLink);
 
         btnLogin.setOnClickListener(v -> {
             String email = etEmail.getText().toString().trim();
@@ -41,7 +46,14 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(this, "Molimo unesite podatke", Toast.LENGTH_SHORT).show();
             }
         });
+
+        tvRegisterLink.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+            startActivity(intent);
+        });
     }
+
+
 
     private void performLogin(String email, String password) {
 

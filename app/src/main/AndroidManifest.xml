@@ -24,6 +24,8 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".ui.RegisterActivity" />
+
         <activity
             android:name=".MainActivity"
             android:exported="false" />
