@@ -25,6 +25,10 @@ public class Habit {
 
     public Habit() {}
 
+    public Habit(String title) {
+        this.title = title;
+    }
+
     public Habit(String userId, String title, String description, String frequency) {
         this.userId = userId;
         this.title = title;
