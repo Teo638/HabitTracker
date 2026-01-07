@@ -21,6 +21,6 @@ public class ChallengeRepository {
     public void getAllChallenges(Callback<List<Challenge>> callback) {
         if (sessionManager.getToken() == null) return;
         String token = "Bearer " + sessionManager.getToken();
-        api.getAllChallenges(token, "anon", "*").enqueue(callback);
+        api.getAllChallenges(token, SupabaseClient.API_KEY, "*").enqueue(callback);
     }
 }

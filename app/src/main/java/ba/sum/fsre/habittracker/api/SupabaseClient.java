@@ -9,10 +9,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class SupabaseClient {
 
 
-    private static final String BASE_URL = "https://jyzdhvwfgpdtykwpexvt.supabase.co/rest/v1/";
+    public static final String BASE_URL = "https://jyzdhvwfgpdtykwpexvt.supabase.co/rest/v1/";
 
 
-    private static final String API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5emRodndmZ3BkdHlrd3BleHZ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc0Njc5MDcsImV4cCI6MjA4MzA0MzkwN30.unmtlMBxAarYKWzTiwLM7P4c8pyLTQOz8s13seTv6so";
+    public static final String API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5emRodndmZ3BkdHlrd3BleHZ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc0Njc5MDcsImV4cCI6MjA4MzA0MzkwN30.unmtlMBxAarYKWzTiwLM7P4c8pyLTQOz8s13seTv6so";
 
     private static Retrofit retrofit = null;
 
