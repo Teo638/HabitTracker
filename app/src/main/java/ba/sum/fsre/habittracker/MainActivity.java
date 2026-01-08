@@ -14,6 +14,8 @@ public class MainActivity extends AppCompatActivity {
     private Button btnLogout;
     private SessionManager sessionManager;
 
+    private Button btnOpenChallenges;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,6 +25,14 @@ public class MainActivity extends AppCompatActivity {
         sessionManager = new SessionManager(this);
 
         btnLogout = findViewById(R.id.btnLogout);
+
+        btnOpenChallenges = findViewById(R.id.btnOpenChallenges);
+
+        btnOpenChallenges.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, ba.sum.fsre.habittracker.ui.ChallengesActivity.class);
+            startActivity(intent);
+        });
+
 
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragmentContainer, new HabitsFragment())
