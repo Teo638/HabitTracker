@@ -15,6 +15,7 @@ public class MainActivity extends AppCompatActivity {
     private SessionManager sessionManager;
 
     private Button btnOpenChallenges;
+    private Button btnEditProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +28,14 @@ public class MainActivity extends AppCompatActivity {
         btnLogout = findViewById(R.id.btnLogout);
 
         btnOpenChallenges = findViewById(R.id.btnOpenChallenges);
+
+        btnEditProfile = findViewById(R.id.btnEditProfile);
+
+
+        btnEditProfile.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, ba.sum.fsre.habittracker.ui.EditProfileActivity.class);
+            startActivity(intent);
+        });
 
         btnOpenChallenges.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, ba.sum.fsre.habittracker.ui.ChallengesActivity.class);
