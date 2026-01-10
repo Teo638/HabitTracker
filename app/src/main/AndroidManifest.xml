@@ -37,6 +37,7 @@
             android:name=".MainActivity"
             android:exported="false" />
         <activity android:name=".ui.ChallengesActivity" />
+        <activity android:name=".ui.EditProfileActivity" />
 
     </application>
 

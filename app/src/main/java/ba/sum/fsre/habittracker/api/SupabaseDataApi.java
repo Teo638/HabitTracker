@@ -2,12 +2,15 @@ package ba.sum.fsre.habittracker.api;
 
 import ba.sum.fsre.habittracker.model.Challenge;
 import ba.sum.fsre.habittracker.model.UserProfile;
+import ba.sum.fsre.habittracker.model.Habit;
 
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Query;
+import retrofit2.http.PATCH;
+import retrofit2.http.Body;
 
 public interface SupabaseDataApi {
 
@@ -16,6 +19,14 @@ public interface SupabaseDataApi {
             @Header("Authorization") String token,
             @Header("apikey") String apiKey,
             @Query("id") String userId
+    );
+
+    @PATCH("profiles")
+    Call<Void> updateProfile(
+            @Header("Authorization") String token,
+            @Header("apikey") String apiKey,
+            @Query("id") String userId,
+            @Body UserProfile profile
     );
 
     @retrofit2.http.GET("challenges")
