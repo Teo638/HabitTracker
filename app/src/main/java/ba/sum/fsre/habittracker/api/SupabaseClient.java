@@ -29,8 +29,11 @@ public class SupabaseClient {
                         Request original = chain.request();
                         Request.Builder requestBuilder = original.newBuilder()
                                 .header("apikey", API_KEY)
-                                .header("Authorization", "Bearer " + API_KEY)
                                 .header("Content-Type", "application/json");
+
+                        if (original.header("Authorization") == null) {
+                            requestBuilder.header("Authorization", "Bearer " + API_KEY);
+                        }
 
                         Request request = requestBuilder.build();
                         return chain.proceed(request);
