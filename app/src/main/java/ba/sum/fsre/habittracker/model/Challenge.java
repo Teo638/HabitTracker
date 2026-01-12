@@ -1,8 +1,9 @@
 package ba.sum.fsre.habittracker.model;
 
 import com.google.gson.annotations.SerializedName;
+import java.io.Serializable;
 
-public class Challenge {
+public class Challenge implements Serializable{
     @SerializedName("id")
     private String id;
 
@@ -29,4 +30,21 @@ public class Challenge {
     public String getTitle() { return title; }
     public String getDescription() { return description; }
     public String getStartDate() { return startDate; }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setCreatorId(String creatorId) {
+        this.creatorId = creatorId;
+    }
+
+    public String getCreatorId() {
+        return creatorId;
+    }
+
 }

@@ -23,4 +23,11 @@ public class ChallengeRepository {
         String token = "Bearer " + sessionManager.getToken();
         api.getAllChallenges(token, SupabaseClient.API_KEY, "*").enqueue(callback);
     }
+
+    public void createChallenge(Challenge challenge, Callback<Void> callback) {
+        String token = "Bearer " + sessionManager.getToken();
+        challenge.setCreatorId(sessionManager.getUserId());
+
+        api.createChallenge(token, SupabaseClient.API_KEY, challenge).enqueue(callback);
+    }
 }
