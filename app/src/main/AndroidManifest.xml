@@ -38,6 +38,8 @@
             android:exported="false" />
         <activity android:name=".ui.ChallengesActivity" />
 
+        <activity android:name=".ui.CreateChallengeActivity" />
+
     </application>
 
 </manifest>
