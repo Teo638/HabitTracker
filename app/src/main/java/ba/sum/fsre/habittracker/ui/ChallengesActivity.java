@@ -12,11 +12,14 @@ import ba.sum.fsre.habittracker.repo.ChallengeRepository;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class ChallengesActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ChallengesAdapter adapter;
     private ChallengeRepository repository;
+
+    private FloatingActionButton fabAdd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +33,12 @@ public class ChallengesActivity extends AppCompatActivity {
 
         repository = new ChallengeRepository(this);
         loadChallenges();
+
+        fabAdd = findViewById(R.id.fabAddChallenge);
+        fabAdd.setOnClickListener(v -> {
+            android.content.Intent intent = new android.content.Intent(ChallengesActivity.this, CreateChallengeActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void loadChallenges() {
@@ -47,5 +56,10 @@ public class ChallengesActivity extends AppCompatActivity {
                 Toast.makeText(ChallengesActivity.this, "Greška mreže", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadChallenges();
     }
 }
