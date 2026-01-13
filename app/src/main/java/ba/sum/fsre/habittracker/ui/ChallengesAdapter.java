@@ -31,6 +31,12 @@ public class ChallengesAdapter extends RecyclerView.Adapter<ChallengesAdapter.Vi
         Challenge c = challenges.get(position);
         holder.tvTitle.setText(c.getTitle());
         holder.tvDesc.setText(c.getDescription());
+
+        holder.itemView.setOnClickListener(v -> {
+            android.content.Intent intent = new android.content.Intent(v.getContext(), ChallengeDetailsActivity.class);
+            intent.putExtra("challenge_data", c);
+            v.getContext().startActivity(intent);
+        });
     }
 
     @Override
