@@ -47,6 +47,8 @@
             android:exported="false" />
 
         <activity android:name=".ui.CreateChallengeActivity" />
+        <activity android:name=".ui.AddHabitActivity" />
+
 
     </application>
 

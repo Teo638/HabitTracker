@@ -1,5 +1,6 @@
 package ba.sum.fsre.habittracker.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -75,8 +76,7 @@ public class HabitsFragment extends Fragment {
     }
      **/
 
-
-private void loadHabits() {
+    private void loadHabits() {
 
     List<Habit> testHabits = new ArrayList<>();
     testHabits.add(new Habit("Popiti vodu"));

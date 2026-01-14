@@ -40,7 +40,6 @@ public class HabitsAdapter extends RecyclerView.Adapter<HabitsAdapter.HabitViewH
         holder.txtTitle.setText(habits.get(position).getTitle());
 
         Habit habit = habits.get(position);
-        holder.txtTitle.setText(habit.getTitle());
 
     }
 

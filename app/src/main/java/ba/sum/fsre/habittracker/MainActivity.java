@@ -1,5 +1,7 @@
 package ba.sum.fsre.habittracker;
 
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
@@ -36,6 +38,12 @@ public class MainActivity extends AppCompatActivity {
         btnOpenChallenges = findViewById(R.id.btnOpenChallenges);
 
         btnEditProfile = findViewById(R.id.btnEditProfile);
+
+        FloatingActionButton fabAddHabit = findViewById(R.id.fabAddHabit);
+        fabAddHabit.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, ba.sum.fsre.habittracker.ui.AddHabitActivity.class);
+            startActivity(intent);
+        });
 
 
         btnEditProfile.setOnClickListener(v -> {

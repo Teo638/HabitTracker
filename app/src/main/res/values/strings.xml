@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">HabitTracker</string>
+    <string-array name="habit_frequencies">
+        <item>Svaki dan</item>
+        <item>Tjedno</item>
+        <item>Mjesečno</item>
+    </string-array>
+
 </resources>
