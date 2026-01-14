@@ -3,7 +3,10 @@ package ba.sum.fsre.habittracker.ui;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
+
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -35,6 +38,10 @@ public class HabitsAdapter extends RecyclerView.Adapter<HabitsAdapter.HabitViewH
     public void onBindViewHolder(@NonNull HabitViewHolder holder, int position) {
 
         holder.txtTitle.setText(habits.get(position).getTitle());
+
+        Habit habit = habits.get(position);
+        holder.txtTitle.setText(habit.getTitle());
+
     }
 
     @Override
@@ -44,11 +51,18 @@ public class HabitsAdapter extends RecyclerView.Adapter<HabitsAdapter.HabitViewH
 
     static class HabitViewHolder extends RecyclerView.ViewHolder {
         TextView txtTitle;
+        CheckBox cbDone;
+        ImageView imgDelete;
 
         public HabitViewHolder(View itemView) {
             super(itemView);
             txtTitle = itemView.findViewById(R.id.txtTitle);
+            cbDone = itemView.findViewById(R.id.cbDone);
+            imgDelete = itemView.findViewById(R.id.imgDelete);
         }
     }
+
+
+
 }
 
