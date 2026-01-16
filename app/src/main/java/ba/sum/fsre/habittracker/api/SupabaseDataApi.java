@@ -7,8 +7,10 @@ import ba.sum.fsre.habittracker.model.Habit;
 
 import java.util.List;
 import retrofit2.Call;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import retrofit2.http.POST;
 import retrofit2.http.Query;
 import retrofit2.http.PATCH;
 import retrofit2.http.Body;
@@ -66,4 +68,27 @@ public interface SupabaseDataApi {
             @retrofit2.http.Query("challenge_id") String challengeId,
             @retrofit2.http.Query("user_id") String userId
     );
+
+
+    @retrofit2.http.GET("habits")
+    retrofit2.Call<java.util.List<Habit>> getHabits(
+            @retrofit2.http.Header("Authorization") String token,
+            @retrofit2.http.Header("apikey") String apiKey,
+            @retrofit2.http.Query("select") String select
+    );
+
+    @retrofit2.http.POST("habits")
+    retrofit2.Call<Void> createHabit(
+            @retrofit2.http.Header("Authorization") String token,
+            @retrofit2.http.Header("apikey") String apiKey,
+            @retrofit2.http.Body Habit habit
+    );
+
+    @retrofit2.http.DELETE("habits")
+    retrofit2.Call<Void> deleteHabit(
+            @retrofit2.http.Header("Authorization") String token,
+            @retrofit2.http.Header("apikey") String apiKey,
+            @retrofit2.http.Query("id") String habitIdFilter
+    );
+
 }

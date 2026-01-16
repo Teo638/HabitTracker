@@ -27,15 +27,13 @@ public class SupabaseClient {
                     .addInterceptor(interceptor)
                     .addInterceptor(chain -> {
                         Request original = chain.request();
-                        Request.Builder requestBuilder = original.newBuilder()
+
+                        Request request = original.newBuilder()
                                 .header("apikey", API_KEY)
-                                .header("Content-Type", "application/json");
+                                .header("Content-Type", "application/json")
+                                .header("Accept", "application/json")
+                                .build();
 
-                        if (original.header("Authorization") == null) {
-                            requestBuilder.header("Authorization", "Bearer " + API_KEY);
-                        }
-
-                        Request request = requestBuilder.build();
                         return chain.proceed(request);
                     })
                     .build();

@@ -1,51 +1,47 @@
 package ba.sum.fsre.habittracker.repo;
 
+import android.content.Context;
+
 import com.google.gson.Gson;
 
+import java.util.List;
+
+import ba.sum.fsre.habittracker.api.SupabaseClient;
+import ba.sum.fsre.habittracker.api.SupabaseDataApi;
 import ba.sum.fsre.habittracker.model.Habit;
-import okhttp3.Callback;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
+import ba.sum.fsre.habittracker.utils.SessionManager;
+import retrofit2.Callback;
+
 
 public class HabitRepository {
 
-    private static final String SUPABASE_URL = "https://jyzdhvwfgpdtykwpexvt.supabase.co/rest/v1/";
-    private static final String API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5emRodndmZ3BkdHlrd3BleHZ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc0Njc5MDcsImV4cCI6MjA4MzA0MzkwN30.unmtlMBxAarYKWzTiwLM7P4c8pyLTQOz8s13seTv6so";
+    private final SupabaseDataApi api;
+    private final SessionManager sessionManager;
 
-    private static final String HABITS_ENDPOINT = "/rest/v1/habits";
-
-    private OkHttpClient client = new OkHttpClient();
-    private Gson gson = new Gson();
-
-
-    public void getMyHabits(Callback callback) {
-        Request request = new Request.Builder()
-                .url(SUPABASE_URL + HABITS_ENDPOINT + "?select=*")
-                .addHeader("apikey", API_KEY)
-                .addHeader("Authorization", "Bearer " + API_KEY)
-                .build();
-
-        client.newCall(request).enqueue(callback);
+    public HabitRepository(Context context) {
+        this.api = SupabaseClient.getClient().create(SupabaseDataApi.class);
+        this.sessionManager = new SessionManager(context);
     }
 
+    public void getMyHabits(Callback<List<Habit>> callback) {
+        String token = "Bearer " + sessionManager.getToken();
+        api.getHabits(token, SupabaseClient.API_KEY, "*")
+                .enqueue(callback);
+    }
 
-    public void createHabit(Habit habit, Callback callback) {
+    public void createHabit(Habit habit, Callback<Void> callback) {
+        String token = "Bearer " + sessionManager.getToken();
 
-        RequestBody body = RequestBody.create(
-                gson.toJson(habit),
-                MediaType.parse("application/json")
-        );
 
-        Request request = new Request.Builder()
-                .url(SUPABASE_URL + HABITS_ENDPOINT)
-                .post(body)
-                .addHeader("apikey", API_KEY)
-                .addHeader("Authorization", "Bearer " + API_KEY)
-                .addHeader("Prefer", "return=minimal")
-                .build();
+        habit.setUserId(sessionManager.getUserId());
 
-        client.newCall(request).enqueue(callback);
+        api.createHabit(token, SupabaseClient.API_KEY, habit)
+                .enqueue(callback);
+    }
+
+    public void deleteHabit(String habitId, Callback<Void> callback) {
+        String token = "Bearer " + sessionManager.getToken();
+        api.deleteHabit(token, SupabaseClient.API_KEY, "eq." + habitId)
+                .enqueue(callback);
     }
 }

@@ -29,12 +29,15 @@ import okhttp3.Response;
 public class HabitsFragment extends Fragment {
 
     private HabitsAdapter adapter;
-    private HabitRepository repository = new HabitRepository();
+    private HabitRepository repository;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_habits, container, false);
+
+        repository = new HabitRepository(requireContext());
 
 
         RecyclerView recyclerView = view.findViewById(R.id.recyclerHabits);
@@ -51,44 +54,23 @@ public class HabitsFragment extends Fragment {
 
         return view;
     }
-
-    /**
     private void loadHabits() {
 
-        repository.getMyHabits(new Callback() {
+        repository.getMyHabits(new retrofit2.Callback<List<Habit>>() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
+            public void onResponse(retrofit2.Call<List<Habit>> call,
+                                   retrofit2.Response<List<Habit>> response) {
+
+                if (response.isSuccessful() && response.body() != null) {
+                    adapter.setHabits(response.body());
+                }
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    String json = response.body().string();
-                    Type type = new TypeToken<List<Habit>>() {}.getType();
-                    List<Habit> habits = new Gson().fromJson(json, type);
-
-
-                    requireActivity().runOnUiThread(() -> adapter.setHabits(habits));
-                }
+            public void onFailure(retrofit2.Call<List<Habit>> call, Throwable t) {
+                t.printStackTrace();
             }
         });
     }
-     **/
-
-    private void loadHabits() {
-
-    List<Habit> testHabits = new ArrayList<>();
-    testHabits.add(new Habit("Popiti vodu"));
-    testHabits.add(new Habit("Vježbati 30 minuta"));
-    testHabits.add(new Habit("Nazvati mamu"));
-    testHabits.add(new Habit("Pročitati 10 stranica knjige"));
-    testHabits.add(new Habit("Pročitati 10 stranica knjige i nastaviti dalje čitati dok ne zaspem"));
-    testHabits.add(new Habit("Pročitati 100 stranica knjige"));
-
-    adapter.setHabits(testHabits);
-}
-
-
 
 }
