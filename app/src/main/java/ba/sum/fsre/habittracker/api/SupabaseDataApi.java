@@ -2,6 +2,7 @@ package ba.sum.fsre.habittracker.api;
 
 import ba.sum.fsre.habittracker.model.Challenge;
 import ba.sum.fsre.habittracker.model.ChallengeParticipant;
+import ba.sum.fsre.habittracker.model.HabitLog;
 import ba.sum.fsre.habittracker.model.UserProfile;
 import ba.sum.fsre.habittracker.model.Habit;
 
@@ -90,5 +91,32 @@ public interface SupabaseDataApi {
             @retrofit2.http.Header("apikey") String apiKey,
             @retrofit2.http.Query("id") String habitIdFilter
     );
+
+
+    @retrofit2.http.GET("habit_logs")
+    retrofit2.Call<java.util.List<HabitLog>> getTodayLogs(
+            @retrofit2.http.Header("Authorization") String token,
+            @retrofit2.http.Header("apikey") String apiKey,
+            @retrofit2.http.Query("select") String select,
+            @retrofit2.http.Query("completed_at") String completedAtFilter
+    );
+
+    // Insert log
+    @retrofit2.http.POST("habit_logs")
+    retrofit2.Call<Void> createHabitLog(
+            @retrofit2.http.Header("Authorization") String token,
+            @retrofit2.http.Header("apikey") String apiKey,
+            @retrofit2.http.Body HabitLog log
+    );
+
+    // Delete log for habit + date
+    @retrofit2.http.DELETE("habit_logs")
+    retrofit2.Call<Void> deleteHabitLog(
+            @retrofit2.http.Header("Authorization") String token,
+            @retrofit2.http.Header("apikey") String apiKey,
+            @retrofit2.http.Query("habit_id") String habitIdFilter,
+            @retrofit2.http.Query("completed_at") String completedAtFilter
+    );
+
 
 }

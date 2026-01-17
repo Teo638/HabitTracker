@@ -23,6 +23,9 @@ public class HabitsFragment extends Fragment {
     private HabitsAdapter adapter;
     private HabitRepository repository;
 
+    private java.util.Set<String> completedToday = new java.util.HashSet<>();
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -38,7 +41,14 @@ public class HabitsFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
 
-        adapter = new HabitsAdapter(habit -> deleteHabit(habit));
+        adapter = new HabitsAdapter(new HabitsAdapter.OnHabitActionListener() {
+            @Override public void onDelete(Habit habit) { deleteHabit(habit); }
+
+            @Override public void onCheck(Habit habit, boolean isChecked) {
+                toggleLog(habit, isChecked);
+            }
+        });
+
         recyclerView.setAdapter(adapter);
 
 
@@ -62,6 +72,7 @@ public class HabitsFragment extends Fragment {
 
                 if (response.isSuccessful() && response.body() != null) {
                     adapter.setHabits(response.body());
+                    loadTodayLogs();
                 }
             }
 
@@ -71,6 +82,64 @@ public class HabitsFragment extends Fragment {
             }
         });
     }
+
+    private void loadTodayLogs() {
+        repository.getTodayLogs(new retrofit2.Callback<List<ba.sum.fsre.habittracker.model.HabitLog>>() {
+            @Override
+            public void onResponse(retrofit2.Call<List<ba.sum.fsre.habittracker.model.HabitLog>> call,
+                                   retrofit2.Response<List<ba.sum.fsre.habittracker.model.HabitLog>> response) {
+
+                if (response.isSuccessful() && response.body() != null) {
+                    java.util.Set<String> ids = new java.util.HashSet<>();
+                    for (ba.sum.fsre.habittracker.model.HabitLog log : response.body()) {
+                        ids.add(log.getHabitId());
+                    }
+                    completedToday = ids;
+                    adapter.setCompletedToday(completedToday);
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<List<ba.sum.fsre.habittracker.model.HabitLog>> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
+
+
+    private void toggleLog(Habit habit, boolean isChecked) {
+        if (isChecked) {
+            repository.logHabitDone(habit.getId(), new retrofit2.Callback<Void>() {
+                @Override
+                public void onResponse(retrofit2.Call<Void> call, retrofit2.Response<Void> response) {
+                    if (response.isSuccessful()) {
+                        completedToday.add(habit.getId());
+                    }
+                }
+
+                @Override
+                public void onFailure(retrofit2.Call<Void> call, Throwable t) {
+                    t.printStackTrace();
+                }
+            });
+        } else {
+            repository.unlogHabitDone(habit.getId(), new retrofit2.Callback<Void>() {
+                @Override
+                public void onResponse(retrofit2.Call<Void> call, retrofit2.Response<Void> response) {
+                    if (response.isSuccessful()) {
+                        completedToday.remove(habit.getId());
+                    }
+                }
+
+                @Override
+                public void onFailure(retrofit2.Call<Void> call, Throwable t) {
+                    t.printStackTrace();
+                }
+            });
+        }
+    }
+
+
 
     private void deleteHabit(Habit habit) {
 
@@ -101,5 +170,9 @@ public class HabitsFragment extends Fragment {
             }
         });
     }
+
+
+
+
 
 }

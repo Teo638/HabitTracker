@@ -9,6 +9,7 @@ import java.util.List;
 import ba.sum.fsre.habittracker.api.SupabaseClient;
 import ba.sum.fsre.habittracker.api.SupabaseDataApi;
 import ba.sum.fsre.habittracker.model.Habit;
+import ba.sum.fsre.habittracker.model.HabitLog;
 import ba.sum.fsre.habittracker.utils.SessionManager;
 import retrofit2.Callback;
 
@@ -44,4 +45,29 @@ public class HabitRepository {
         api.deleteHabit(token, SupabaseClient.API_KEY, "eq." + habitId)
                 .enqueue(callback);
     }
+
+    private String today() {
+        return java.time.LocalDate.now().toString(); // "YYYY-MM-DD"
+    }
+
+    public void getTodayLogs(retrofit2.Callback<List<HabitLog>> callback) {
+        String token = "Bearer " + sessionManager.getToken();
+        api.getTodayLogs(token, SupabaseClient.API_KEY, "habit_id", "eq." + today())
+                .enqueue(callback);
+    }
+
+    public void logHabitDone(String habitId, retrofit2.Callback<Void> callback) {
+        String token = "Bearer " + sessionManager.getToken();
+        HabitLog log = new HabitLog(habitId, sessionManager.getUserId(), today());
+        api.createHabitLog(token, SupabaseClient.API_KEY, log).enqueue(callback);
+    }
+
+    public void unlogHabitDone(String habitId, retrofit2.Callback<Void> callback) {
+        String token = "Bearer " + sessionManager.getToken();
+        api.deleteHabitLog(token, SupabaseClient.API_KEY,
+                "eq." + habitId,
+                "eq." + today()
+        ).enqueue(callback);
+    }
+
 }

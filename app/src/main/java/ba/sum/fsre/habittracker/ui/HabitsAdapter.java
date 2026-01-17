@@ -21,8 +21,16 @@ public class HabitsAdapter extends RecyclerView.Adapter<HabitsAdapter.HabitViewH
 
     private List<Habit> habits = new ArrayList<>();
 
+    private java.util.Set<String> completedToday = new java.util.HashSet<>();
+
+    public void setCompletedToday(java.util.Set<String> ids) {
+        this.completedToday = ids;
+        notifyDataSetChanged();
+    }
+
     public interface OnHabitActionListener {
         void onDelete(Habit habit);
+        void onCheck(Habit habit, boolean isChecked);
     }
 
     private OnHabitActionListener listener;
@@ -49,7 +57,8 @@ public class HabitsAdapter extends RecyclerView.Adapter<HabitsAdapter.HabitViewH
 
         Habit habit = habits.get(position);
 
-        holder.txtTitle.setText(habits.get(position).getTitle());
+        holder.txtTitle.setText(habit.getTitle());
+
 
         holder.imgDelete.setOnClickListener(v -> {
             if (listener != null) {
@@ -57,7 +66,19 @@ public class HabitsAdapter extends RecyclerView.Adapter<HabitsAdapter.HabitViewH
             }
         });
 
+
+        holder.cbDone.setOnCheckedChangeListener(null);
+
+        boolean checked = completedToday.contains(habit.getId());
+        holder.cbDone.setChecked(checked);
+
+        holder.cbDone.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (listener != null) {
+                listener.onCheck(habit, isChecked);
+            }
+        });
     }
+
 
     @Override
     public int getItemCount() {
