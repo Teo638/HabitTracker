@@ -1,85 +1,124 @@
 package ba.sum.fsre.habittracker;
 
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
-import android.Manifest;
-import android.content.pm.PackageManager;
-import android.os.Build;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import ba.sum.fsre.habittracker.utils.NotificationScheduler;
+import androidx.fragment.app.Fragment;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import android.widget.ImageView;
+import com.squareup.picasso.Picasso;
 
+import java.util.List;
+
+import ba.sum.fsre.habittracker.model.UserProfile;
+import ba.sum.fsre.habittracker.ui.ChallengesFragment;
 import ba.sum.fsre.habittracker.ui.HabitsFragment;
+import ba.sum.fsre.habittracker.ui.LeaderboardFragment;
 import ba.sum.fsre.habittracker.ui.LoginActivity;
+import ba.sum.fsre.habittracker.utils.NotificationScheduler;
 import ba.sum.fsre.habittracker.utils.SessionManager;
+import ba.sum.fsre.habittracker.ui.EditProfileActivity;
+import ba.sum.fsre.habittracker.repo.UserProfileRepository;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button btnLogout;
     private SessionManager sessionManager;
-
-    private Button btnOpenChallenges;
-    private Button btnEditProfile;
+    private UserProfileRepository userProfileRepository;
+    private ImageView imgProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         sessionManager = new SessionManager(this);
+        userProfileRepository = new UserProfileRepository(this);
 
-        btnLogout = findViewById(R.id.btnLogout);
+        BottomNavigationView bottomNav = findViewById(R.id.bottomNavigation);
+        imgProfile = findViewById(R.id.imgProfile);
 
-        btnOpenChallenges = findViewById(R.id.btnOpenChallenges);
+        loadUserProfile();
 
-        btnEditProfile = findViewById(R.id.btnEditProfile);
 
-        FloatingActionButton fabAddHabit = findViewById(R.id.fabAddHabit);
-        fabAddHabit.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, ba.sum.fsre.habittracker.ui.AddHabitActivity.class);
+        imgProfile.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, EditProfileActivity.class);
             startActivity(intent);
         });
 
 
-        btnEditProfile.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, ba.sum.fsre.habittracker.ui.EditProfileActivity.class);
-            startActivity(intent);
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragmentContainer, new HabitsFragment())
+                    .commit();
+        }
+
+
+        bottomNav.setOnItemSelectedListener(item -> {
+            Fragment selectedFragment = null;
+            int id = item.getItemId();
+
+            if (id == R.id.nav_home) {
+                selectedFragment = new HabitsFragment();
+            } else if (id == R.id.nav_challenges) {
+                selectedFragment = new ChallengesFragment();
+            } else if (id == R.id.nav_leaderboard) {
+                selectedFragment = new LeaderboardFragment();
+            } else if (id == R.id.nav_logout) {
+
+                sessionManager.clearSession();
+                startActivity(new Intent(this, LoginActivity.class));
+                finish();
+                return true;
+            }
+
+
+            if (selectedFragment != null) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragmentContainer, selectedFragment)
+                        .commit();
+            }
+            return true;
         });
 
-        btnOpenChallenges.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, ba.sum.fsre.habittracker.ui.ChallengesActivity.class);
-            startActivity(intent);
-        });
 
-
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragmentContainer, new HabitsFragment())
-                .commit();
-
-
-        btnLogout.setOnClickListener(v -> {
-
-            sessionManager.clearSession();
-
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-            startActivity(intent);
-            finish();
-        });
-
-        checkNotificationPermission();
         NotificationScheduler.scheduleNotifications(this);
     }
+    private void loadUserProfile() {
+        userProfileRepository.getMyProfile(new Callback<List<UserProfile>>() {
+            @Override
+            public void onResponse(Call<List<UserProfile>> call, Response<List<UserProfile>> response) {
+                if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                    UserProfile profile = response.body().get(0);
+                    String avatarUrl = profile.getAvatarUrl();
 
-    private void checkNotificationPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, 1);
+
+                    if (avatarUrl != null && !avatarUrl.isEmpty()) {
+                        Picasso.get().invalidate(avatarUrl);
+
+                        Picasso.get()
+                                .load(avatarUrl)
+                                .placeholder(R.drawable.ic_default_profile)
+                                .error(R.drawable.ic_default_profile)
+                                .into(imgProfile);
+                    }
+
+                }
             }
-        }
+
+            @Override
+            public void onFailure(Call<List<UserProfile>> call, Throwable t) {
+
+            }
+        });
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadUserProfile();
     }
 }

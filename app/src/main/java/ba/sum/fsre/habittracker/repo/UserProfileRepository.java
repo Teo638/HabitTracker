@@ -9,6 +9,8 @@ import ba.sum.fsre.habittracker.utils.SessionManager;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 
 public class UserProfileRepository {
     private final SupabaseDataApi api;
@@ -35,4 +37,41 @@ public class UserProfileRepository {
 
         api.updateProfile(token, API_KEY, queryId, profile).enqueue(callback);
     }
+
+    public void uploadAvatar(byte[] imageBytes, final Callback<String> callback) {
+        String userId = sessionManager.getUserId();
+        String fileName = userId + ".jpg";
+
+
+        String uploadUrl = SupabaseClient.BASE_URL.replace("/rest/v1/", "/storage/v1/object/avatars/" + fileName);
+
+
+        RequestBody requestBody = RequestBody.create(MediaType.parse("image/jpeg"), imageBytes);
+
+        String token = "Bearer " + sessionManager.getToken();
+
+
+        api.uploadImage(uploadUrl, token, API_KEY, "image/jpeg", requestBody).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+
+                    String publicUrl = SupabaseClient.BASE_URL.replace("/rest/v1/", "/storage/v1/object/public/avatars/" + fileName);
+
+
+                    callback.onResponse(null, Response.success(publicUrl));
+                } else {
+
+                    callback.onFailure(null, new Throwable("Upload failed: " + response.code()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+
+                callback.onFailure(null, t);
+            }
+        });
+    }
+
 }
