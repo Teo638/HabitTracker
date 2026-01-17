@@ -7,6 +7,8 @@ import ba.sum.fsre.habittracker.model.UserProfile;
 import ba.sum.fsre.habittracker.model.Habit;
 
 import java.util.List;
+
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
@@ -15,6 +17,7 @@ import retrofit2.http.POST;
 import retrofit2.http.Query;
 import retrofit2.http.PATCH;
 import retrofit2.http.Body;
+import retrofit2.http.Url;
 
 public interface SupabaseDataApi {
 
@@ -116,6 +119,16 @@ public interface SupabaseDataApi {
             @retrofit2.http.Header("apikey") String apiKey,
             @retrofit2.http.Query("habit_id") String habitIdFilter,
             @retrofit2.http.Query("completed_at") String completedAtFilter
+    );
+
+    @retrofit2.http.Headers("x-upsert: true")
+    @POST
+    Call<Void> uploadImage(
+            @Url String fullUrl,
+            @Header("Authorization") String token,
+            @Header("apikey") String apiKey,
+            @Header("Content-Type") String contentType,
+            @Body RequestBody image
     );
 
 

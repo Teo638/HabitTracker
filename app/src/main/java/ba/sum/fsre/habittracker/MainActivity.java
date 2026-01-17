@@ -96,6 +96,8 @@ public class MainActivity extends AppCompatActivity {
 
 
                     if (avatarUrl != null && !avatarUrl.isEmpty()) {
+                        Picasso.get().invalidate(avatarUrl);
+
                         Picasso.get()
                                 .load(avatarUrl)
                                 .placeholder(R.drawable.ic_default_profile)

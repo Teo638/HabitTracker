@@ -1,12 +1,22 @@
-package ba.sum.fsre.habittracker.ui;
+    package ba.sum.fsre.habittracker.ui;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.squareup.picasso.Picasso;
+
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.util.List;
 import ba.sum.fsre.habittracker.R;
 import ba.sum.fsre.habittracker.model.UserProfile;
@@ -20,8 +30,24 @@ public class EditProfileActivity extends AppCompatActivity {
     private EditText etUsername, etBio;
     private Button btnSaveProfile;
     private ProgressBar progressBar;
+
+
+    private ImageView imgEditAvatar;
+
     private UserProfileRepository repository;
     private UserProfile currentUser;
+
+    private byte[] selectedImageBytes;
+
+    private final ActivityResultLauncher<String> pickImageLauncher = registerForActivityResult(
+            new ActivityResultContracts.GetContent(),
+            uri -> {
+                if (uri != null) {
+                    imgEditAvatar.setImageURI(uri);
+                    selectedImageBytes = uriToBytes(uri);
+                }
+            }
+    );
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,12 +59,33 @@ public class EditProfileActivity extends AppCompatActivity {
         btnSaveProfile = findViewById(R.id.btnSaveProfile);
         progressBar = findViewById(R.id.progressBar);
 
+
+        imgEditAvatar = findViewById(R.id.imgEditAvatar);
+
         repository = new UserProfileRepository(this);
+
+        imgEditAvatar.setOnClickListener(v -> pickImageLauncher.launch("image/*"));
 
         loadCurrentProfile();
 
-
         btnSaveProfile.setOnClickListener(v -> saveProfile());
+    }
+
+    private byte[] uriToBytes(Uri uri) {
+        try {
+            InputStream inputStream = getContentResolver().openInputStream(uri);
+            ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+            int bufferSize = 1024;
+            byte[] buffer = new byte[bufferSize];
+            int len;
+            while ((len = inputStream.read(buffer)) != -1) {
+                byteBuffer.write(buffer, 0, len);
+            }
+            return byteBuffer.toByteArray();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     private void loadCurrentProfile() {
@@ -54,6 +101,9 @@ public class EditProfileActivity extends AppCompatActivity {
                     if (currentUser.getBio() != null) {
                         etBio.setText(currentUser.getBio());
                     }
+                    if (currentUser.getAvatarUrl() != null && !currentUser.getAvatarUrl().isEmpty()) {
+                        Picasso.get().load(currentUser.getAvatarUrl()).placeholder(R.drawable.ic_default_profile).into(imgEditAvatar);
+                    }
                 }
             }
 
@@ -65,12 +115,48 @@ public class EditProfileActivity extends AppCompatActivity {
         });
     }
 
+
     private void saveProfile() {
+        progressBar.setVisibility(View.VISIBLE);
+        btnSaveProfile.setEnabled(false);
+
+
+        if (selectedImageBytes != null) {
+            repository.uploadAvatar(selectedImageBytes, new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+
+                    String newAvatarUrl = response.body();
+                    if (currentUser == null) currentUser = new UserProfile();
+
+                    currentUser.setAvatarUrl(newAvatarUrl);
+
+
+                    updateUserData();
+                }
+
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    progressBar.setVisibility(View.GONE);
+                    btnSaveProfile.setEnabled(true);
+                    Toast.makeText(EditProfileActivity.this, "Greška kod uploada slike", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+
+            updateUserData();
+        }
+    }
+
+
+    private void updateUserData() {
         String newUsername = etUsername.getText().toString().trim();
         String newBio = etBio.getText().toString().trim();
 
         if (newUsername.isEmpty()) {
             etUsername.setError("Obavezno polje");
+            progressBar.setVisibility(View.GONE);
+            btnSaveProfile.setEnabled(true);
             return;
         }
 
@@ -78,12 +164,8 @@ public class EditProfileActivity extends AppCompatActivity {
             currentUser = new UserProfile();
         }
 
-
         currentUser.setUsername(newUsername);
         currentUser.setBio(newBio);
-
-        progressBar.setVisibility(View.VISIBLE);
-        btnSaveProfile.setEnabled(false);
 
         repository.updateMyProfile(currentUser, new Callback<Void>() {
             @Override
@@ -108,4 +190,3 @@ public class EditProfileActivity extends AppCompatActivity {
         });
     }
 }
-
