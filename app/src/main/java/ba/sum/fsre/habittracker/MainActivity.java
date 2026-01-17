@@ -1,85 +1,66 @@
 package ba.sum.fsre.habittracker;
 
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
-import android.Manifest;
-import android.content.pm.PackageManager;
-import android.os.Build;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import ba.sum.fsre.habittracker.utils.NotificationScheduler;
+import androidx.fragment.app.Fragment;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import ba.sum.fsre.habittracker.ui.ChallengesFragment;
 import ba.sum.fsre.habittracker.ui.HabitsFragment;
+import ba.sum.fsre.habittracker.ui.LeaderboardFragment;
 import ba.sum.fsre.habittracker.ui.LoginActivity;
+import ba.sum.fsre.habittracker.utils.NotificationScheduler;
 import ba.sum.fsre.habittracker.utils.SessionManager;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button btnLogout;
     private SessionManager sessionManager;
-
-    private Button btnOpenChallenges;
-    private Button btnEditProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         sessionManager = new SessionManager(this);
-
-        btnLogout = findViewById(R.id.btnLogout);
-
-        btnOpenChallenges = findViewById(R.id.btnOpenChallenges);
-
-        btnEditProfile = findViewById(R.id.btnEditProfile);
-
-        FloatingActionButton fabAddHabit = findViewById(R.id.fabAddHabit);
-        fabAddHabit.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, ba.sum.fsre.habittracker.ui.AddHabitActivity.class);
-            startActivity(intent);
-        });
+        BottomNavigationView bottomNav = findViewById(R.id.bottomNavigation);
 
 
-        btnEditProfile.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, ba.sum.fsre.habittracker.ui.EditProfileActivity.class);
-            startActivity(intent);
-        });
-
-        btnOpenChallenges.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, ba.sum.fsre.habittracker.ui.ChallengesActivity.class);
-            startActivity(intent);
-        });
-
-
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragmentContainer, new HabitsFragment())
-                .commit();
-
-
-        btnLogout.setOnClickListener(v -> {
-
-            sessionManager.clearSession();
-
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-            startActivity(intent);
-            finish();
-        });
-
-        checkNotificationPermission();
-        NotificationScheduler.scheduleNotifications(this);
-    }
-
-    private void checkNotificationPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, 1);
-            }
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragmentContainer, new HabitsFragment())
+                    .commit();
         }
+
+
+        bottomNav.setOnItemSelectedListener(item -> {
+            Fragment selectedFragment = null;
+            int id = item.getItemId();
+
+            if (id == R.id.nav_home) {
+                selectedFragment = new HabitsFragment();
+            } else if (id == R.id.nav_challenges) {
+                selectedFragment = new ChallengesFragment();
+            } else if (id == R.id.nav_leaderboard) {
+                selectedFragment = new LeaderboardFragment();
+            } else if (id == R.id.nav_logout) {
+
+                sessionManager.clearSession();
+                startActivity(new Intent(this, LoginActivity.class));
+                finish();
+                return true;
+            }
+
+
+            if (selectedFragment != null) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragmentContainer, selectedFragment)
+                        .commit();
+            }
+            return true;
+        });
+
+
+        NotificationScheduler.scheduleNotifications(this);
     }
 }
