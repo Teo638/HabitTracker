@@ -10,6 +10,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.List;
 
 import ba.sum.fsre.habittracker.R;
@@ -50,6 +52,12 @@ public class HabitsFragment extends Fragment {
         });
 
         recyclerView.setAdapter(adapter);
+
+        FloatingActionButton fab = view.findViewById(R.id.fabAddHabit);
+        fab.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), AddHabitActivity.class);
+            startActivity(intent);
+        });
 
 
         loadHabits();
