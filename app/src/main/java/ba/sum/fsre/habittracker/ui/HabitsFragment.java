@@ -46,6 +46,13 @@ public class HabitsFragment extends Fragment {
 
         return view;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadHabits();
+    }
+
     private void loadHabits() {
 
         repository.getMyHabits(new retrofit2.Callback<List<Habit>>() {
