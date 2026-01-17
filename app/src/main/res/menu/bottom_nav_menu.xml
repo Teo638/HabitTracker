@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/ic_home"
+        android:title="Navike" />
+
+    <item
+        android:id="@+id/nav_challenges"
+        android:icon="@drawable/ic_challenges"
+        android:title="Izazovi" />
+
+    <item
+        android:id="@+id/nav_leaderboard"
+        android:icon="@drawable/ic_leaderboard"
+        android:title="Rang Lista" />
+
+    <item
+        android:id="@+id/nav_logout"
+        android:icon="@drawable/ic_logout"
+        android:title="Odjava" />
+
+</menu>
