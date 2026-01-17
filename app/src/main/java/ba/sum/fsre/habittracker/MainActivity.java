@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import android.widget.ImageView;
 
 import ba.sum.fsre.habittracker.ui.ChallengesFragment;
 import ba.sum.fsre.habittracker.ui.HabitsFragment;
@@ -12,6 +13,7 @@ import ba.sum.fsre.habittracker.ui.LeaderboardFragment;
 import ba.sum.fsre.habittracker.ui.LoginActivity;
 import ba.sum.fsre.habittracker.utils.NotificationScheduler;
 import ba.sum.fsre.habittracker.utils.SessionManager;
+import ba.sum.fsre.habittracker.ui.EditProfileActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,6 +26,12 @@ public class MainActivity extends AppCompatActivity {
 
         sessionManager = new SessionManager(this);
         BottomNavigationView bottomNav = findViewById(R.id.bottomNavigation);
+
+        ImageView imgProfile = findViewById(R.id.imgProfile);
+        imgProfile.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, EditProfileActivity.class);
+            startActivity(intent);
+        });
 
 
         if (savedInstanceState == null) {
