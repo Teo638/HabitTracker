@@ -15,6 +15,9 @@ public class UserProfile {
     @SerializedName("bio")
     private String bio;
 
+    @SerializedName("avatar_url")
+    private String avatarUrl;
+
     public UserProfile() {}
 
     public UserProfile(String id, String username, int points, String bio) {
@@ -54,6 +57,14 @@ public class UserProfile {
 
     public void setBio(String bio) {
         this.bio = bio;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 }
 
