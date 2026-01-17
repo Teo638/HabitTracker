@@ -21,6 +21,16 @@ public class HabitsAdapter extends RecyclerView.Adapter<HabitsAdapter.HabitViewH
 
     private List<Habit> habits = new ArrayList<>();
 
+    public interface OnHabitActionListener {
+        void onDelete(Habit habit);
+    }
+
+    private OnHabitActionListener listener;
+
+    public HabitsAdapter(OnHabitActionListener listener) {
+        this.listener = listener;
+    }
+
     public void setHabits(List<Habit> habits) {
         this.habits = habits;
         notifyDataSetChanged();
@@ -37,9 +47,15 @@ public class HabitsAdapter extends RecyclerView.Adapter<HabitsAdapter.HabitViewH
     @Override
     public void onBindViewHolder(@NonNull HabitViewHolder holder, int position) {
 
+        Habit habit = habits.get(position);
+
         holder.txtTitle.setText(habits.get(position).getTitle());
 
-        Habit habit = habits.get(position);
+        holder.imgDelete.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onDelete(habit);
+            }
+        });
 
     }
 

@@ -10,20 +10,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 
 import ba.sum.fsre.habittracker.R;
 import ba.sum.fsre.habittracker.model.Habit;
 import ba.sum.fsre.habittracker.repo.HabitRepository;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
+
 
 
 public class HabitsFragment extends Fragment {
@@ -46,7 +38,7 @@ public class HabitsFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
 
-        adapter = new HabitsAdapter();
+        adapter = new HabitsAdapter(habit -> deleteHabit(habit));
         recyclerView.setAdapter(adapter);
 
 
@@ -68,6 +60,36 @@ public class HabitsFragment extends Fragment {
 
             @Override
             public void onFailure(retrofit2.Call<List<Habit>> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
+
+    private void deleteHabit(Habit habit) {
+
+        repository.deleteHabit(habit.getId(), new retrofit2.Callback<Void>() {
+            @Override
+            public void onResponse(retrofit2.Call<Void> call,
+                                   retrofit2.Response<Void> response) {
+
+                if (response.isSuccessful()) {
+                    loadHabits();
+                    android.widget.Toast.makeText(
+                            getContext(),
+                            "Navika obrisana",
+                            android.widget.Toast.LENGTH_SHORT
+                    ).show();
+                } else {
+                    android.widget.Toast.makeText(
+                            getContext(),
+                            "Greška: " + response.code(),
+                            android.widget.Toast.LENGTH_SHORT
+                    ).show();
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<Void> call, Throwable t) {
                 t.printStackTrace();
             }
         });
