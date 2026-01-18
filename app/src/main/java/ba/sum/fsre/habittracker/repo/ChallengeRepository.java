@@ -15,7 +15,7 @@ public class ChallengeRepository {
     private final SessionManager sessionManager;
 
     public ChallengeRepository(Context context) {
-        this.api = SupabaseClient.getClient().create(SupabaseDataApi.class);
+        this.api = SupabaseClient.getClient(context).create(SupabaseDataApi.class);
         this.sessionManager = new SessionManager(context);
     }
 

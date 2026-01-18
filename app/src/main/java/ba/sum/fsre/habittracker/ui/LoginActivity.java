@@ -59,7 +59,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void performLogin(String email, String password) {
 
-        SupabaseAuthApi api = SupabaseClient.getClient().create(SupabaseAuthApi.class);
+        SupabaseAuthApi api = SupabaseClient.getClient(this).create(SupabaseAuthApi.class);
 
 
         LoginRequest request = new LoginRequest(email, password);
@@ -76,10 +76,11 @@ public class LoginActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
 
                     String token = response.body().getAccessToken();
+                    String refreshToken = response.body().getRefreshToken();
                     String userId = response.body().getUserId();
 
                     SessionManager sessionManager = new SessionManager(LoginActivity.this);
-                    sessionManager.saveSession(token, userId);
+                    sessionManager.saveSession(token,refreshToken, userId);
 
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     intent.putExtra("USER_ID", userId);

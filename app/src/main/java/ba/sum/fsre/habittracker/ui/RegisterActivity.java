@@ -49,7 +49,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void performRegister(String email, String password) {
-        SupabaseAuthApi api = SupabaseClient.getClient().create(SupabaseAuthApi.class);
+        SupabaseAuthApi api = SupabaseClient.getClient(this).create(SupabaseAuthApi.class);
         LoginRequest request = new LoginRequest(email, password);
 
         String url = "https://jyzdhvwfgpdtykwpexvt.supabase.co/auth/v1/signup";

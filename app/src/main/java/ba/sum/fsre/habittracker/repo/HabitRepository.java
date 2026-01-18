@@ -20,7 +20,7 @@ public class HabitRepository {
     private final SessionManager sessionManager;
 
     public HabitRepository(Context context) {
-        this.api = SupabaseClient.getClient().create(SupabaseDataApi.class);
+        this.api = SupabaseClient.getClient(context).create(SupabaseDataApi.class);
         this.sessionManager = new SessionManager(context);
     }
 
