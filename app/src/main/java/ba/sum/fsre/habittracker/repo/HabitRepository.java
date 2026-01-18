@@ -70,4 +70,32 @@ public class HabitRepository {
         ).enqueue(callback);
     }
 
+    public void getWeeklyLogs(List<String> habitIds, String startDate, String endDate,
+                              retrofit2.Callback<List<HabitLog>> callback) {
+
+        if (habitIds == null || habitIds.isEmpty()) {
+            callback.onResponse(null, retrofit2.Response.success(java.util.Collections.emptyList()));
+            return;
+        }
+
+        String token = "Bearer " + sessionManager.getToken();
+
+        
+        StringBuilder in = new StringBuilder("in.(");
+        for (int i = 0; i < habitIds.size(); i++) {
+            in.append(habitIds.get(i));
+            if (i < habitIds.size() - 1) in.append(",");
+        }
+        in.append(")");
+
+        String url = SupabaseClient.BASE_URL + "habit_logs"
+                + "?select=habit_id,completed_at"
+                + "&completed_at=gte." + startDate
+                + "&completed_at=lte." + endDate
+                + "&habit_id=" + in;
+
+        api.getLogsByUrl(url, token, SupabaseClient.API_KEY).enqueue(callback);
+    }
+
+
 }

@@ -139,5 +139,13 @@ public interface SupabaseDataApi {
             @Query("order") String order
     );
 
+    @retrofit2.http.GET
+    retrofit2.Call<java.util.List<HabitLog>> getLogsByUrl(
+            @retrofit2.http.Url String fullUrl,
+            @retrofit2.http.Header("Authorization") String token,
+            @retrofit2.http.Header("apikey") String apiKey
+    );
+
+
 
 }
