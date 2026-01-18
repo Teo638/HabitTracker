@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -12,55 +13,62 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import ba.sum.fsre.habittracker.R;
 import ba.sum.fsre.habittracker.model.Habit;
+import ba.sum.fsre.habittracker.model.HabitLog;
+import ba.sum.fsre.habittracker.model.UserProfile;
 import ba.sum.fsre.habittracker.repo.HabitRepository;
-
-
+import ba.sum.fsre.habittracker.repo.UserProfileRepository;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class HabitsFragment extends Fragment {
 
     private HabitsAdapter adapter;
-    private HabitRepository repository;
+    private HabitRepository habitRepository;
+    private UserProfileRepository userProfileRepository;
 
-    private java.util.Set<String> completedToday = new java.util.HashSet<>();
-
-
+    private LocalDate today;
+    private LocalDate weekStart;
+    private LocalDate weekEnd;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.fragment_habits, container, false);
 
-        repository = new HabitRepository(requireContext());
-
+        habitRepository = new HabitRepository(requireContext());
+        userProfileRepository = new UserProfileRepository(requireContext());
 
         RecyclerView recyclerView = view.findViewById(R.id.recyclerHabits);
-
-
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-
         adapter = new HabitsAdapter(new HabitsAdapter.OnHabitActionListener() {
-            @Override public void onDelete(Habit habit) { deleteHabit(habit); }
+            @Override
+            public void onDelete(Habit habit) {
+                deleteHabit(habit);
+            }
 
-            @Override public void onCheck(Habit habit, boolean isChecked) {
-                toggleLog(habit, isChecked);
+            @Override
+            public void onCheckIn(Habit habit) {
+                checkIn(habit);
             }
         });
 
         recyclerView.setAdapter(adapter);
 
         FloatingActionButton fab = view.findViewById(R.id.fabAddHabit);
-        fab.setOnClickListener(v -> {
-            Intent intent = new Intent(getContext(), AddHabitActivity.class);
-            startActivity(intent);
-        });
+        fab.setOnClickListener(v -> startActivity(new Intent(getContext(), AddHabitActivity.class)));
 
-
-        loadHabits();
+        loadHabitsAndWeeklyLogs();
 
         return view;
     }
@@ -68,119 +76,117 @@ public class HabitsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        loadHabits();
+        loadHabitsAndWeeklyLogs();
     }
 
-    private void loadHabits() {
+    private void loadHabitsAndWeeklyLogs() {
+        today = LocalDate.now();
+        weekStart = today.with(DayOfWeek.MONDAY);
+        weekEnd = weekStart.plusDays(6);
 
-        repository.getMyHabits(new retrofit2.Callback<List<Habit>>() {
+        adapter.setWeek(weekStart, today);
+
+        habitRepository.getMyHabits(new Callback<List<Habit>>() {
             @Override
-            public void onResponse(retrofit2.Call<List<Habit>> call,
-                                   retrofit2.Response<List<Habit>> response) {
-
+            public void onResponse(Call<List<Habit>> call, Response<List<Habit>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    adapter.setHabits(response.body());
-                    loadTodayLogs();
+
+                    List<Habit> habits = response.body();
+                    adapter.setHabits(habits);
+
+                    List<String> habitIds = new ArrayList<>();
+                    for (Habit h : habits) habitIds.add(h.getId());
+
+                    loadWeeklyLogs(habitIds);
                 }
             }
 
             @Override
-            public void onFailure(retrofit2.Call<List<Habit>> call, Throwable t) {
+            public void onFailure(Call<List<Habit>> call, Throwable t) {
                 t.printStackTrace();
             }
         });
     }
 
-    private void loadTodayLogs() {
-        repository.getTodayLogs(new retrofit2.Callback<List<ba.sum.fsre.habittracker.model.HabitLog>>() {
-            @Override
-            public void onResponse(retrofit2.Call<List<ba.sum.fsre.habittracker.model.HabitLog>> call,
-                                   retrofit2.Response<List<ba.sum.fsre.habittracker.model.HabitLog>> response) {
+    private void loadWeeklyLogs(List<String> habitIds) {
+        habitRepository.getWeeklyLogs(habitIds, weekStart.toString(), weekEnd.toString(),
+                new Callback<List<HabitLog>>() {
+                    @Override
+                    public void onResponse(Call<List<HabitLog>> call, Response<List<HabitLog>> response) {
+                        if (response.isSuccessful() && response.body() != null) {
 
-                if (response.isSuccessful() && response.body() != null) {
-                    java.util.Set<String> ids = new java.util.HashSet<>();
-                    for (ba.sum.fsre.habittracker.model.HabitLog log : response.body()) {
-                        ids.add(log.getHabitId());
+                            Map<String, java.util.Set<String>> map = new HashMap<>();
+
+                            for (HabitLog log : response.body()) {
+                                String hid = log.getHabitId();
+                                if (!map.containsKey(hid)) map.put(hid, new HashSet<>());
+
+
+                                map.get(hid).add(log.getCompletedAt());
+                            }
+
+                            adapter.setWeeklyDone(map);
+                        }
                     }
-                    completedToday = ids;
-                    adapter.setCompletedToday(completedToday);
-                }
-            }
 
-            @Override
-            public void onFailure(retrofit2.Call<List<ba.sum.fsre.habittracker.model.HabitLog>> call, Throwable t) {
-                t.printStackTrace();
-            }
-        });
+                    @Override
+                    public void onFailure(Call<List<HabitLog>> call, Throwable t) {
+                        t.printStackTrace();
+                    }
+                });
     }
 
-
-    private void toggleLog(Habit habit, boolean isChecked) {
-        if (isChecked) {
-            repository.logHabitDone(habit.getId(), new retrofit2.Callback<Void>() {
-                @Override
-                public void onResponse(retrofit2.Call<Void> call, retrofit2.Response<Void> response) {
-                    if (response.isSuccessful()) {
-                        completedToday.add(habit.getId());
-                    }
-                }
-
-                @Override
-                public void onFailure(retrofit2.Call<Void> call, Throwable t) {
-                    t.printStackTrace();
-                }
-            });
-        } else {
-            repository.unlogHabitDone(habit.getId(), new retrofit2.Callback<Void>() {
-                @Override
-                public void onResponse(retrofit2.Call<Void> call, retrofit2.Response<Void> response) {
-                    if (response.isSuccessful()) {
-                        completedToday.remove(habit.getId());
-                    }
-                }
-
-                @Override
-                public void onFailure(retrofit2.Call<Void> call, Throwable t) {
-                    t.printStackTrace();
-                }
-            });
-        }
-    }
-
-
-
-    private void deleteHabit(Habit habit) {
-
-        repository.deleteHabit(habit.getId(), new retrofit2.Callback<Void>() {
+    private void checkIn(Habit habit) {
+        habitRepository.logHabitDone(habit.getId(), new Callback<Void>() {
             @Override
-            public void onResponse(retrofit2.Call<Void> call,
-                                   retrofit2.Response<Void> response) {
+            public void onResponse(Call<Void> call, Response<Void> response) {
 
                 if (response.isSuccessful()) {
-                    loadHabits();
-                    android.widget.Toast.makeText(
-                            getContext(),
-                            "Navika obrisana",
-                            android.widget.Toast.LENGTH_SHORT
-                    ).show();
+
+
+                    userProfileRepository.getMyProfile(new Callback<List<UserProfile>>() {
+                        @Override
+                        public void onResponse(Call<List<UserProfile>> call, Response<List<UserProfile>> response) {
+                            if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                                UserProfile profile = response.body().get(0);
+                                profile.setPoints(profile.getPoints() + 10);
+                                userProfileRepository.updateMyProfile(profile, new Callback<Void>() {
+                                    @Override public void onResponse(Call<Void> c, Response<Void> r) {}
+                                    @Override public void onFailure(Call<Void> c, Throwable t) {}
+                                });
+                            }
+                        }
+                        @Override public void onFailure(Call<List<UserProfile>> call, Throwable t) {}
+                    });
+
+
+                    loadHabitsAndWeeklyLogs();
+
                 } else {
-                    android.widget.Toast.makeText(
-                            getContext(),
-                            "Greška: " + response.code(),
-                            android.widget.Toast.LENGTH_SHORT
-                    ).show();
+                    Toast.makeText(getContext(), "Greška check-in: " + response.code(), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(retrofit2.Call<Void> call, Throwable t) {
+            public void onFailure(Call<Void> call, Throwable t) {
                 t.printStackTrace();
             }
         });
     }
 
+    private void deleteHabit(Habit habit) {
+        habitRepository.deleteHabit(habit.getId(), new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    loadHabitsAndWeeklyLogs();
+                }
+            }
 
-
-
-
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
 }

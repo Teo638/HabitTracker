@@ -80,7 +80,7 @@ public class HabitRepository {
 
         String token = "Bearer " + sessionManager.getToken();
 
-        
+
         StringBuilder in = new StringBuilder("in.(");
         for (int i = 0; i < habitIds.size(); i++) {
             in.append(habitIds.get(i));

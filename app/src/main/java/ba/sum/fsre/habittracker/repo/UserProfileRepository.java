@@ -79,4 +79,25 @@ public class UserProfileRepository {
         api.getLeaderboard(token, SupabaseClient.API_KEY, "*", "points.desc").enqueue(callback);
     }
 
+    public void addPoints(int delta, final Callback<Void> callback) {
+        getMyProfile(new Callback<List<UserProfile>>() {
+            @Override
+            public void onResponse(Call<List<UserProfile>> call, Response<List<UserProfile>> response) {
+                if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                    UserProfile me = response.body().get(0);
+                    me.setPoints(me.getPoints() + delta);
+                    updateMyProfile(me, callback);
+                } else {
+                    callback.onFailure(null, new Throwable("Profile not found"));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<UserProfile>> call, Throwable t) {
+                callback.onFailure(null, t);
+            }
+        });
+    }
+
+
 }
