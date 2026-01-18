@@ -95,7 +95,7 @@
                     android:layout_marginHorizontal="2dp"
                     android:gravity="center"
                     android:text="M"
-                    android:textColor="#AAAAAA"
+                    android:textColor="#FFFFFF"
                     android:background="@drawable/bg_circle_day"/>
 
                 <TextView
@@ -106,7 +106,7 @@
                     android:layout_marginHorizontal="2dp"
                     android:gravity="center"
                     android:text="T"
-                    android:textColor="#AAAAAA"
+                    android:textColor="#FFFFFF"
                     android:background="@drawable/bg_circle_day"/>
 
                 <TextView
@@ -117,7 +117,7 @@
                     android:layout_marginHorizontal="2dp"
                     android:gravity="center"
                     android:text="W"
-                    android:textColor="#AAAAAA"
+                    android:textColor="#FFFFFF"
                     android:background="@drawable/bg_circle_day"/>
 
                 <TextView
@@ -128,7 +128,7 @@
                     android:layout_marginHorizontal="2dp"
                     android:gravity="center"
                     android:text="T"
-                    android:textColor="#AAAAAA"
+                    android:textColor="#FFFFFF"
                     android:background="@drawable/bg_circle_day"/>
 
                 <TextView
@@ -139,7 +139,7 @@
                     android:layout_marginHorizontal="2dp"
                     android:gravity="center"
                     android:text="F"
-                    android:textColor="#AAAAAA"
+                    android:textColor="#FFFFFF"
                     android:background="@drawable/bg_circle_day"/>
 
                 <TextView
@@ -150,7 +150,7 @@
                     android:layout_marginHorizontal="2dp"
                     android:gravity="center"
                     android:text="S"
-                    android:textColor="#AAAAAA"
+                    android:textColor="#FFFFFF"
                     android:background="@drawable/bg_circle_day"/>
 
                 <TextView
@@ -161,7 +161,7 @@
                     android:layout_marginHorizontal="2dp"
                     android:gravity="center"
                     android:text="S"
-                    android:textColor="#AAAAAA"
+                    android:textColor="#FFFFFF"
                     android:background="@drawable/bg_circle_day"/>
 
             </LinearLayout>
