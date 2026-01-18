@@ -36,6 +36,24 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
 
         holder.tvRank.setText("#" + (position + 1));
 
+        int colorResId;
+        if (position == 0) {
+            colorResId = R.color.gold;
+            holder.tvRank.setTextSize(22);
+        } else if (position == 1) {
+            colorResId = R.color.silver;
+            holder.tvRank.setTextSize(20);
+        } else if (position == 2) {
+            colorResId = R.color.bronze;
+            holder.tvRank.setTextSize(20);
+        } else {
+            colorResId = R.color.rank_default;
+            holder.tvRank.setTextSize(18);
+        }
+
+
+        holder.tvRank.setTextColor(holder.itemView.getContext().getResources().getColor(colorResId));
+
 
         String displayName = (user.getUsername() != null && !user.getUsername().isEmpty())
                 ? user.getUsername()

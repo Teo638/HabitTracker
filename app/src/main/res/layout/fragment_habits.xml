@@ -15,6 +15,30 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
+    <ImageView
+        android:id="@+id/imgEmpty"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:src="@drawable/ic_empty_list"
+        app:tint="#333333"
+        app:layout_constraintBottom_toTopOf="@id/tvEmptyState"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:id="@+id/tvEmptyState"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nemaš navika.\nKlikni + da dodaš prvu!"
+        android:textColor="#888888"
+        android:textSize="18sp"
+        android:textAlignment="center"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAddHabit"
         android:layout_width="wrap_content"
@@ -23,6 +47,8 @@
         android:src="@android:drawable/ic_input_add"
         android:contentDescription="Dodaj naviku"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:backgroundTint="@color/app_accent"
+        app:tint="@color/black"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
