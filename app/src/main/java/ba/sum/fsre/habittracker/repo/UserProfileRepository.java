@@ -18,7 +18,7 @@ public class UserProfileRepository {
     private final String API_KEY = SupabaseClient.API_KEY;
 
     public UserProfileRepository(Context context) {
-        this.api = SupabaseClient.getClient().create(SupabaseDataApi.class);
+        this.api = SupabaseClient.getClient(context).create(SupabaseDataApi.class);
         this.sessionManager = new SessionManager(context);
     }
 

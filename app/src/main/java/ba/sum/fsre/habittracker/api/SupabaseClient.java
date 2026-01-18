@@ -5,6 +5,7 @@ import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import android.content.Context;
 
 public class SupabaseClient {
 
@@ -16,15 +17,18 @@ public class SupabaseClient {
 
     private static Retrofit retrofit = null;
 
-    public static Retrofit getClient() {
+    public static Retrofit getClient(Context context) {
         if (retrofit == null) {
 
             HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
             interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
+            TokenAuthenticator authenticator = new TokenAuthenticator(context);
+
 
             OkHttpClient client = new OkHttpClient.Builder()
                     .addInterceptor(interceptor)
+                    .authenticator(authenticator)
                     .addInterceptor(chain -> {
                         Request original = chain.request();
 

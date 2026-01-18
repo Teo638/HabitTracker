@@ -7,6 +7,7 @@ public class SessionManager {
     private static final String PREF_NAME = "HabitTrackerSession";
     private static final String KEY_TOKEN = "auth_token";
     private static final String KEY_USER_ID = "user_id";
+    private static final String KEY_REFRESH_TOKEN = "refresh_token";
 
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
@@ -18,10 +19,15 @@ public class SessionManager {
         editor = sharedPreferences.edit();
     }
 
-    public void saveSession(String token, String userId) {
+    public void saveSession(String token,String refreshToken, String userId) {
         editor.putString(KEY_TOKEN, token);
+        editor.putString(KEY_REFRESH_TOKEN, refreshToken);
         editor.putString(KEY_USER_ID, userId);
         editor.apply();
+    }
+
+    public String getRefreshToken() {
+        return sharedPreferences.getString(KEY_REFRESH_TOKEN, null);
     }
 
     public String getToken() {
