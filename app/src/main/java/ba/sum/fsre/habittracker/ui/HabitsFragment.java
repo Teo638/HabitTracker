@@ -41,6 +41,12 @@ public class HabitsFragment extends Fragment {
     private LocalDate weekStart;
     private LocalDate weekEnd;
 
+    private RecyclerView recyclerView;
+    private View imgEmpty;
+    private View tvEmptyState;
+
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_habits, container, false);
@@ -48,8 +54,12 @@ public class HabitsFragment extends Fragment {
         habitRepository = new HabitRepository(requireContext());
         userProfileRepository = new UserProfileRepository(requireContext());
 
-        RecyclerView recyclerView = view.findViewById(R.id.recyclerHabits);
+
+        recyclerView = view.findViewById(R.id.recyclerHabits);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        imgEmpty = view.findViewById(R.id.imgEmpty);
+        tvEmptyState = view.findViewById(R.id.tvEmptyState);
 
         adapter = new HabitsAdapter(new HabitsAdapter.OnHabitActionListener() {
             @Override
@@ -79,6 +89,18 @@ public class HabitsFragment extends Fragment {
         loadHabitsAndWeeklyLogs();
     }
 
+    private void updateEmptyState(List<Habit> habits) {
+        if (recyclerView == null || imgEmpty == null || tvEmptyState == null) return;
+
+        boolean isEmpty = (habits == null || habits.isEmpty());
+
+        recyclerView.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
+        imgEmpty.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
+        tvEmptyState.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
+    }
+
+
+
     private void loadHabitsAndWeeklyLogs() {
         today = LocalDate.now();
         weekStart = today.with(DayOfWeek.MONDAY);
@@ -94,16 +116,36 @@ public class HabitsFragment extends Fragment {
                     List<Habit> habits = response.body();
                     adapter.setHabits(habits);
 
+
+                    updateEmptyState(habits);
+                    if (habits.isEmpty()) {
+                        adapter.setWeeklyDone(new HashMap<>());
+                        return;
+                    }
+
+
                     List<String> habitIds = new ArrayList<>();
                     for (Habit h : habits) habitIds.add(h.getId());
 
                     loadWeeklyLogs(habitIds);
+
+                } else {
+
+                    adapter.setHabits(new ArrayList<>());
+                    adapter.setWeeklyDone(new HashMap<>());
+                    updateEmptyState(new ArrayList<>());
+
                 }
             }
 
             @Override
             public void onFailure(Call<List<Habit>> call, Throwable t) {
                 t.printStackTrace();
+
+                adapter.setHabits(new ArrayList<>());
+                adapter.setWeeklyDone(new HashMap<>());
+                updateEmptyState(new ArrayList<>());
+
             }
         });
     }
@@ -120,7 +162,6 @@ public class HabitsFragment extends Fragment {
                             for (HabitLog log : response.body()) {
                                 String hid = log.getHabitId();
                                 if (!map.containsKey(hid)) map.put(hid, new HashSet<>());
-
 
                                 map.get(hid).add(log.getCompletedAt());
                             }
@@ -143,7 +184,6 @@ public class HabitsFragment extends Fragment {
 
                 if (response.isSuccessful()) {
 
-
                     userProfileRepository.getMyProfile(new Callback<List<UserProfile>>() {
                         @Override
                         public void onResponse(Call<List<UserProfile>> call, Response<List<UserProfile>> response) {
@@ -158,7 +198,6 @@ public class HabitsFragment extends Fragment {
                         }
                         @Override public void onFailure(Call<List<UserProfile>> call, Throwable t) {}
                     });
-
 
                     loadHabitsAndWeeklyLogs();
 

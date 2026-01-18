@@ -14,7 +14,7 @@ public class HabitLog {
     private String userId;
 
     @SerializedName("completed_at")
-    private String completedAt; 
+    private String completedAt;
 
     public HabitLog(String habitId, String userId, String completedAt) {
         this.habitId = habitId;

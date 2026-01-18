@@ -27,21 +27,19 @@ import ba.sum.fsre.habittracker.model.Habit;
 
 public class HabitsAdapter extends RecyclerView.Adapter<HabitsAdapter.HabitViewHolder> {
 
-    // Student 2: klik na CHECK (nema odznacavanja)
     public interface OnHabitActionListener {
         void onDelete(Habit habit);
-        void onCheckIn(Habit habit); // check-in za danas
+        void onCheckIn(Habit habit);
     }
 
     private final OnHabitActionListener listener;
 
     private List<Habit> habits = new ArrayList<>();
 
-    // habitId -> set datuma ("YYYY-MM-DD") za trenutnu sedmicu
     private Map<String, Set<String>> weeklyDone = new HashMap<>();
 
     private LocalDate today = LocalDate.now();
-    private LocalDate weekStart = today.with(DayOfWeek.MONDAY); // ponedjeljak
+    private LocalDate weekStart = today.with(DayOfWeek.MONDAY);
 
     public HabitsAdapter(OnHabitActionListener listener) {
         this.listener = listener;
@@ -52,13 +50,11 @@ public class HabitsAdapter extends RecyclerView.Adapter<HabitsAdapter.HabitViewH
         notifyDataSetChanged();
     }
 
-    // Fragment treba pozvati ovo kad ucita weekly logove
     public void setWeeklyDone(Map<String, Set<String>> weeklyDone) {
         this.weeklyDone = (weeklyDone != null) ? weeklyDone : new HashMap<>();
         notifyDataSetChanged();
     }
 
-    // Fragment moze pozvati kad se promijeni sedmica ili kad se vrati u app
     public void setWeek(LocalDate weekStart, LocalDate today) {
         if (weekStart != null) this.weekStart = weekStart;
         if (today != null) this.today = today;
@@ -78,23 +74,19 @@ public class HabitsAdapter extends RecyclerView.Adapter<HabitsAdapter.HabitViewH
         Habit habit = habits.get(position);
         holder.txtTitle.setText(habit.getTitle());
 
-        // Delete
         holder.imgDelete.setOnClickListener(v -> {
             if (listener != null) listener.onDelete(habit);
         });
 
-        // Dohvati set odradjenih datuma za ovaj habit
         Set<String> doneDates = weeklyDone.get(habit.getId());
         if (doneDates == null) doneDates = new HashSet<>();
 
-        // Oboji 7 krugova (Pon..Ned)
-        paintWeek(holder, doneDates);
+        // ---- CHANGED: pass habit so we can use createdAt ----
+        paintWeek(holder, doneDates, habit);
 
-        // Streak (uzastopni dani unutar sedmice do danas)
         int streak = computeStreak(doneDates);
         holder.txtStreak.setText("Streak: " + streak);
 
-        // CHECK logika: ako danas vec postoji log -> checked + disabled
         boolean doneToday = doneDates.contains(today.toString());
 
         holder.cbDone.setOnCheckedChangeListener(null);
@@ -102,15 +94,12 @@ public class HabitsAdapter extends RecyclerView.Adapter<HabitsAdapter.HabitViewH
         holder.cbDone.setEnabled(!doneToday);
         holder.cbDone.setAlpha(doneToday ? 0.4f : 1f);
 
-        // Nema odznacavanja: cekiraj => callback; odcekiraj => vrati na cekirano
         holder.cbDone.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (doneToday) return; // vec odradjeno, ignorisi
+            if (doneToday) return;
 
             if (isChecked) {
-                // korisnik radi check-in
                 if (listener != null) listener.onCheckIn(habit);
             } else {
-                // ne dozvoljavamo odznacavanje
                 holder.cbDone.setOnCheckedChangeListener(null);
                 holder.cbDone.setChecked(true);
                 holder.cbDone.setOnCheckedChangeListener((bv, chk) -> {
@@ -125,24 +114,32 @@ public class HabitsAdapter extends RecyclerView.Adapter<HabitsAdapter.HabitViewH
         return habits.size();
     }
 
-    // ===== Weekly paint + streak helpers =====
-
-    private void paintWeek(HabitViewHolder holder, Set<String> doneDates) {
+    
+    private void paintWeek(HabitViewHolder holder, Set<String> doneDates, Habit habit) {
         TextView[] circles = new TextView[]{
                 holder.dayMon, holder.dayTue, holder.dayWed, holder.dayThu,
                 holder.dayFri, holder.daySat, holder.daySun
         };
 
+
+        LocalDate createdDate = parseCreatedDate(habit != null ? habit.getCreatedAt() : null);
+
         for (int i = 0; i < 7; i++) {
             LocalDate d = weekStart.plusDays(i);
             String ds = d.toString();
 
+
+            if (createdDate != null && d.isBefore(createdDate)) {
+                tintCircle(circles[i], "#C9C9C9");
+                continue;
+            }
+
             if (doneDates.contains(ds)) {
-                tintCircle(circles[i], "#34C759"); // ZELENO
+                tintCircle(circles[i], "#34C759");
             } else if (d.isBefore(today)) {
-                tintCircle(circles[i], "#FF3B30"); // CRVENO
+                tintCircle(circles[i], "#FF3B30");
             } else {
-                tintCircle(circles[i], "#777777"); // SIVO
+                tintCircle(circles[i], "#777777");
             }
         }
     }
@@ -151,7 +148,6 @@ public class HabitsAdapter extends RecyclerView.Adapter<HabitsAdapter.HabitViewH
         int streak = 0;
         LocalDate cursor = today;
 
-        // brojimo unazad od danas do ponedjeljka
         while (!cursor.isBefore(weekStart)) {
             if (doneDates.contains(cursor.toString())) streak++;
             else break;
@@ -172,7 +168,21 @@ public class HabitsAdapter extends RecyclerView.Adapter<HabitsAdapter.HabitViewH
         }
     }
 
-    // ===== ViewHolder =====
+
+    private LocalDate parseCreatedDate(String createdAt) {
+        if (createdAt == null || createdAt.isEmpty()) return null;
+        try {
+
+            if (createdAt.length() >= 10) {
+                return LocalDate.parse(createdAt.substring(0, 10));
+            }
+            return LocalDate.parse(createdAt);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+
     static class HabitViewHolder extends RecyclerView.ViewHolder {
 
         TextView txtTitle;
