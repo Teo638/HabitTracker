@@ -131,5 +131,13 @@ public interface SupabaseDataApi {
             @Body RequestBody image
     );
 
+    @GET("profiles")
+    Call<List<UserProfile>> getLeaderboard(
+            @Header("Authorization") String token,
+            @Header("apikey") String apiKey,
+            @Query("select") String select,
+            @Query("order") String order
+    );
+
 
 }

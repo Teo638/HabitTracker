@@ -38,32 +38,51 @@
         android:layout_alignBottom="@id/imgEditAvatar"
         android:layout_alignEnd="@id/imgEditAvatar"/>
     </RelativeLayout>
-    <EditText
-        android:id="@+id/etUsername"
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Korisničko ime"
-        android:inputType="textPersonName"
-        android:minHeight="48dp"/>
+        android:layout_marginBottom="16dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        app:boxStrokeColor="@color/app_accent"
+        app:hintTextColor="@color/app_accent">
 
-    <EditText
-        android:id="@+id/etBio"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etUsername"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:textColor="@color/white"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:hint="Opis"
-        android:inputType="textMultiLine"
-        android:minLines="3"
-        android:gravity="top|start"
-        android:minHeight="48dp"/>
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        app:boxStrokeColor="@color/app_accent"
+        app:hintTextColor="@color/app_accent">
 
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etBio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textMultiLine"
+            android:minLines="3"
+            android:gravity="top|start"
+            android:textColor="@color/white"/>
+    </com.google.android.material.textfield.TextInputLayout>
     <Button
         android:id="@+id/btnSaveProfile"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:text="Spremi promjene"
-        android:layout_marginTop="32dp"
-        android:backgroundTint="@color/blue"/>
+        android:layout_marginTop="40dp"
+        android:backgroundTint="@color/app_accent"
+        android:textColor="@color/black"
+        app:cornerRadius="30dp"
+        android:textSize="16sp"/>
 
     <ProgressBar
         android:id="@+id/progressBar"

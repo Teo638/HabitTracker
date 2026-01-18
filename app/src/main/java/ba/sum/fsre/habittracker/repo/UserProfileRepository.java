@@ -74,4 +74,9 @@ public class UserProfileRepository {
         });
     }
 
+    public void getLeaderboard(final Callback<List<UserProfile>> callback) {
+        String token = "Bearer " + sessionManager.getToken();
+        api.getLeaderboard(token, SupabaseClient.API_KEY, "*", "points.desc").enqueue(callback);
+    }
+
 }
