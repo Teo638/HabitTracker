@@ -87,6 +87,13 @@ public class HabitsAdapter extends RecyclerView.Adapter<HabitsAdapter.HabitViewH
         int streak = computeStreak(doneDates);
         holder.txtStreak.setText("Streak: " + streak);
 
+        holder.itemView.setOnClickListener(v -> {
+            android.content.Intent intent = new android.content.Intent(v.getContext(), HabitDetailsActivity.class);
+            intent.putExtra("habit_data", habit);
+            intent.putExtra("habit_streak", streak);
+            v.getContext().startActivity(intent);
+        });
+
         boolean doneToday = doneDates.contains(today.toString());
 
         holder.cbDone.setOnCheckedChangeListener(null);
