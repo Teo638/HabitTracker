@@ -1,28 +1,58 @@
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:elevation="4dp">
-        <LinearLayout android:layout_width="match_parent"
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginVertical="8dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="#1E1E1E">
+    <LinearLayout android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp">
-        <TextView android:id="@+id/tvChallengeTitle"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Naslov"
-            android:textSize="18sp"
-            android:textStyle="bold"/>
-        <TextView android:id="@+id/tvChallengeDesc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Opis..."
-            android:layout_marginTop="4dp"/>
-        <Button android:id="@+id/btnJoin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Pridruži se"
-            android:layout_marginTop="8dp"
-            android:layout_gravity="end"/>
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_challenges"
+                app:tint="@color/app_accent"
+                android:layout_marginEnd="12dp"/>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/tvChallengeTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Naslov izazova"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold"/>
+                <TextView
+                    android:id="@+id/tvChallengeDesc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Opis"
+                    android:textColor="#AAAAAA"
+                    android:maxLines="2"
+                    android:ellipsize="end"
+                    android:textSize="14sp"
+                    android:layout_marginTop="4dp"/>
+            </LinearLayout>
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@android:drawable/ic_menu_send"
+                app:tint="#666666"
+                android:rotation="-45"/>
+        </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>
