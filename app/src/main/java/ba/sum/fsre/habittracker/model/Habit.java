@@ -2,7 +2,9 @@ package ba.sum.fsre.habittracker.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Habit {
+import java.io.Serializable;
+
+public class Habit implements Serializable {
 
     @SerializedName("id")
     private String id;
