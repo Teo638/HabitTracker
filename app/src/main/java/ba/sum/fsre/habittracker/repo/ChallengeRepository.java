@@ -9,6 +9,9 @@ import ba.sum.fsre.habittracker.utils.SessionManager;
 import retrofit2.Call;
 import retrofit2.Callback;
 import ba.sum.fsre.habittracker.model.Challenge;
+import java.util.HashMap;
+import java.util.Map;
+import ba.sum.fsre.habittracker.model.ChallengeLeaderboardEntry;
 
 public class ChallengeRepository {
     private final SupabaseDataApi api;
@@ -46,5 +49,14 @@ public class ChallengeRepository {
     public void checkParticipation(String challengeId, Callback<java.util.List<ChallengeParticipant>> callback) {
         String token = "Bearer " + sessionManager.getToken();
         api.checkParticipation(token, SupabaseClient.API_KEY, "eq." + challengeId, "eq." + sessionManager.getUserId()).enqueue(callback);
+    }
+    public void getChallengeLeaderboard(String challengeId, Callback<List<ChallengeLeaderboardEntry>> callback) {
+        String token = "Bearer " + sessionManager.getToken();
+
+
+        Map<String, String> params = new HashMap<>();
+        params.put("challenge_id_param", challengeId);
+
+        api.getChallengeLeaderboard(token, SupabaseClient.API_KEY, params).enqueue(callback);
     }
 }
