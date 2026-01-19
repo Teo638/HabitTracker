@@ -49,6 +49,7 @@
         <activity android:name=".ui.CreateChallengeActivity" />
         <activity android:name=".ui.ChallengeDetailsActivity"/>
         <activity android:name=".ui.AddHabitActivity" />
+        <activity android:name=".ui.HabitDetailsActivity" />
 
 
 
