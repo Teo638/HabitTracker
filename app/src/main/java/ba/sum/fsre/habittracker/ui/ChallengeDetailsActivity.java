@@ -9,7 +9,10 @@ import java.util.List;
 import ba.sum.fsre.habittracker.R;
 import ba.sum.fsre.habittracker.model.Challenge;
 import ba.sum.fsre.habittracker.model.ChallengeParticipant;
+import ba.sum.fsre.habittracker.model.Habit;
 import ba.sum.fsre.habittracker.repo.ChallengeRepository;
+import ba.sum.fsre.habittracker.repo.HabitRepository;
+import ba.sum.fsre.habittracker.repo.UserProfileRepository;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -22,6 +25,9 @@ public class ChallengeDetailsActivity extends AppCompatActivity {
     private Challenge challenge;
     private boolean isJoined = false;
 
+    private HabitRepository habitRepository;
+    private UserProfileRepository userProfileRepository;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +38,9 @@ public class ChallengeDetailsActivity extends AppCompatActivity {
         tvDate = findViewById(R.id.tvDetailDate);
         btnJoinLeave = findViewById(R.id.btnJoinLeave);
         repository = new ChallengeRepository(this);
+
+        habitRepository = new HabitRepository(this);
+        userProfileRepository = new UserProfileRepository(this);
 
 
         challenge = (Challenge) getIntent().getSerializableExtra("challenge_data");
@@ -82,11 +91,36 @@ public class ChallengeDetailsActivity extends AppCompatActivity {
                     Toast.makeText(ChallengeDetailsActivity.this, "Pridruženo!", Toast.LENGTH_SHORT).show();
                     isJoined = true;
                     updateButtonUI();
+
+                    createLinkedHabitAndAddPoints();
                 }
             }
             @Override
             public void onFailure(Call<Void> call, Throwable t) {}
         });
+    }
+    private void createLinkedHabitAndAddPoints() {
+
+        String habitTitle = "🏆 " + challenge.getTitle();
+        Habit newHabit = new Habit(null, habitTitle, "Izazov: " + challenge.getTitle(), "Daily");
+
+        habitRepository.createHabit(newHabit, new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+            }
+            @Override public void onFailure(Call<Void> call, Throwable t) {}
+        });
+
+        userProfileRepository.addPoints(50, new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+            }
+        });
+        Toast.makeText(this, "Osvojeno 50 XP!", Toast.LENGTH_SHORT).show();
     }
 
     private void performLeave() {
