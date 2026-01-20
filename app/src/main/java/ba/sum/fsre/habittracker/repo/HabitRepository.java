@@ -96,6 +96,10 @@ public class HabitRepository {
 
         api.getLogsByUrl(url, token, SupabaseClient.API_KEY).enqueue(callback);
     }
-
+    public void deleteHabitByChallengeId(String challengeId, Callback<Void> callback) {
+        String token = "Bearer " + sessionManager.getToken();
+        api.deleteHabitByChallenge(token, SupabaseClient.API_KEY, "eq." + challengeId, "eq." + sessionManager.getUserId())
+                .enqueue(callback);
+    }
 
 }
