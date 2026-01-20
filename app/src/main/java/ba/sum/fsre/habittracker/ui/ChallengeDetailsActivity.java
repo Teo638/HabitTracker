@@ -118,6 +118,8 @@ public class ChallengeDetailsActivity extends AppCompatActivity {
         String habitTitle = "🏆 " + challenge.getTitle();
         Habit newHabit = new Habit(null, habitTitle, "Izazov: " + challenge.getTitle(), "Daily");
 
+        newHabit.setChallengeId(challenge.getId());
+
         habitRepository.createHabit(newHabit, new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
