@@ -24,6 +24,9 @@ public class Habit implements Serializable {
     @SerializedName("created_at")
     private String createdAt;
 
+    @SerializedName("challenge_id")
+    private String challenge_id;
+
 
     public Habit() {}
 
@@ -84,6 +87,13 @@ public class Habit implements Serializable {
 
     public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getChallengeId(){
+        return challenge_id;
+    }
+    public void setChallengeId(String challenge_id){
+        this.challenge_id=challenge_id;
     }
 }
 
