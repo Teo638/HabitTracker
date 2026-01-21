@@ -10,9 +10,9 @@ public class ChallengeLeaderboardEntry {
     private String avatarUrl;
 
     @SerializedName("score")
-    private int score;
+    private long score;
 
     public String getUsername() { return username; }
     public String getAvatarUrl() { return avatarUrl; }
-    public int getScore() { return score; }
+    public long getScore() { return score; }
 }

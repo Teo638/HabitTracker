@@ -10,7 +10,7 @@ public class UserProfile {
     private String username;
 
     @SerializedName("points")
-    private int points;
+    private long points;
 
     @SerializedName("bio")
     private String bio;
@@ -18,9 +18,12 @@ public class UserProfile {
     @SerializedName("avatar_url")
     private String avatarUrl;
 
+    @SerializedName("accepted_terms")
+    private boolean acceptedTerms;
+
     public UserProfile() {}
 
-    public UserProfile(String id, String username, int points, String bio) {
+    public UserProfile(String id, String username, long points, String bio) {
         this.id = id;
         this.username = username;
         this.points = points;
@@ -43,11 +46,11 @@ public class UserProfile {
         this.username = username;
     }
 
-    public int getPoints() {
+    public long getPoints() {
         return points;
     }
 
-    public void setPoints(int points) {
+    public void setPoints(long points) {
         this.points = points;
     }
 
@@ -65,6 +68,14 @@ public class UserProfile {
 
     public void setAvatarUrl(String avatarUrl) {
         this.avatarUrl = avatarUrl;
+    }
+
+    public boolean isAcceptedTerms() {
+        return acceptedTerms;
+    }
+
+    public void setAcceptedTerms(boolean acceptedTerms) {
+        this.acceptedTerms = acceptedTerms;
     }
 }
 

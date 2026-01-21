@@ -3,6 +3,7 @@ package ba.sum.fsre.habittracker.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,11 +22,14 @@ public class RegisterActivity extends AppCompatActivity {
 
     private EditText etEmail, etPassword;
     private Button btnRegister;
+    private CheckBox cbTerms;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        cbTerms = findViewById(R.id.cbTerms);
 
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
@@ -34,6 +38,11 @@ public class RegisterActivity extends AppCompatActivity {
         btnRegister.setOnClickListener(v -> {
             String email = etEmail.getText().toString().trim();
             String password = etPassword.getText().toString().trim();
+
+            if (!cbTerms.isChecked()) {
+                Toast.makeText(this, "Morate prihvatiti uvjete korištenja!", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
             if (password.length() < 6) {
                 Toast.makeText(this, "Lozinka mora imati barem 6 znakova", Toast.LENGTH_SHORT).show();
