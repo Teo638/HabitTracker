@@ -81,7 +81,7 @@ public class HabitsAdapter extends RecyclerView.Adapter<HabitsAdapter.HabitViewH
         Set<String> doneDates = weeklyDone.get(habit.getId());
         if (doneDates == null) doneDates = new HashSet<>();
 
-        // ---- CHANGED: pass habit so we can use createdAt ----
+
         paintWeek(holder, doneDates, habit);
 
         int streak = computeStreak(doneDates);

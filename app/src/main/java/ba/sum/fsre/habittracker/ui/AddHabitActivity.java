@@ -54,7 +54,7 @@ public class AddHabitActivity extends AppCompatActivity {
                 return;
             }
 
-            // userId će postaviti repo (habit.setUserId(sessionManager.getUserId()))
+
             Habit newHabit = new Habit(null, title, desc, freq);
 
             repository.createHabit(newHabit, new Callback<Void>() {
@@ -62,7 +62,7 @@ public class AddHabitActivity extends AppCompatActivity {
                 public void onResponse(Call<Void> call, Response<Void> response) {
                     if (response.isSuccessful()) {
                         Toast.makeText(AddHabitActivity.this, "Navika kreirana!", Toast.LENGTH_SHORT).show();
-                        finish(); // vrati se nazad na listu
+                        finish();
                     } else {
                         Toast.makeText(AddHabitActivity.this,
                                 "Greška: " + response.code(),
