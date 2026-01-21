@@ -38,6 +38,17 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin = findViewById(R.id.btnLogin);
         tvRegisterLink = findViewById(R.id.tvRegisterLink);
 
+        TextView tvTerms = findViewById(R.id.tvTermsLogin);
+
+        tvTerms.setOnClickListener(v -> {
+            new androidx.appcompat.app.AlertDialog.Builder(this)
+                    .setTitle("Uvjeti korištenja i privatnost")
+                    .setMessage("Vaša privatnost nam je važna. Podaci o navikama koriste se isključivo za rad aplikacije i prikaz na rang listi izazova.\n\n" +
+                            "Korištenjem aplikacije prihvaćate da su vaši rezultati vidljivi drugim korisnicima.")
+                    .setPositiveButton("U redu", null)
+                    .show();
+        });
+
         btnLogin.setOnClickListener(v -> {
             String email = etEmail.getText().toString().trim();
             String password = etPassword.getText().toString().trim();
