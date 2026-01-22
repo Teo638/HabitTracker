@@ -32,14 +32,17 @@
         android:layout_marginTop="48dp"
         android:enabled="false"/>
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Sudionici (Top Lista)"
-        android:textSize="20sp"
+        android:text="LJESTVICA SUDIONIKA:"
+        android:fontFamily="@font/poppins_medium"
+        android:textSize="22sp"
+        android:textColor="@color/primary_orange"
+        android:gravity="center"
         android:textStyle="bold"
-        android:textColor="@color/white"
+        android:letterSpacing="0.1"
         android:layout_marginTop="32dp"
-        android:layout_marginBottom="12dp"/>
+        android:layout_marginBottom="16dp"/>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerParticipants"
         android:layout_width="match_parent"
