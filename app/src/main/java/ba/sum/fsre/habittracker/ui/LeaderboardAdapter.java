@@ -14,6 +14,7 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 import ba.sum.fsre.habittracker.R;
 import ba.sum.fsre.habittracker.model.UserProfile;
+import android.animation.ValueAnimator;
 
 public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.ViewHolder> {
 
@@ -61,7 +62,14 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
                 : "Korisnik";
         holder.tvUsername.setText(displayName);
 
-        holder.tvPoints.setText(user.getPoints() + " XP");
+        int finalPoints = (int) user.getPoints();
+
+        ValueAnimator animator = ValueAnimator.ofInt(0, finalPoints);
+        animator.setDuration(1000);
+        animator.addUpdateListener(animation -> {
+            holder.tvPoints.setText(animation.getAnimatedValue().toString() + " XP");
+        });
+        animator.start();
 
 
         if (user.getAvatarUrl() != null && !user.getAvatarUrl().isEmpty()) {
