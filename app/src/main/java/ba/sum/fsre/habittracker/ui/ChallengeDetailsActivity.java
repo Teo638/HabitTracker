@@ -1,6 +1,7 @@
 package ba.sum.fsre.habittracker.ui;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -142,6 +143,9 @@ public class ChallengeDetailsActivity extends AppCompatActivity {
     }
 
     private void loadParticipants() {
+        TextView emptyState = findViewById(R.id.emptyStateTextView);
+        RecyclerView recyclerView = findViewById(R.id.recyclerParticipants);
+
         repository.getChallengeLeaderboard(challenge.getId(), new Callback<List<ChallengeLeaderboardEntry>>() {
             @Override
             public void onResponse(Call<List<ChallengeLeaderboardEntry>> call, Response<List<ChallengeLeaderboardEntry>> response) {
@@ -155,9 +159,17 @@ public class ChallengeDetailsActivity extends AppCompatActivity {
                         p.setPoints(entry.getScore());
                         profiles.add(p);
                     }
-                    participantsAdapter.setUsers(profiles);
+                    if (profiles.isEmpty()) {
+                        recyclerView.setVisibility(View.GONE);
+                        emptyState.setVisibility(View.VISIBLE);
+                    } else {
+                        recyclerView.setVisibility(View.VISIBLE);
+                        emptyState.setVisibility(View.GONE);
+                        participantsAdapter.setUsers(profiles);
+                    }
                 }
-            }
+                }
+
             @Override public void onFailure(Call<List<ChallengeLeaderboardEntry>> call, Throwable t) {}
         });
     }
