@@ -15,6 +15,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import ba.sum.fsre.habittracker.R;
 import ba.sum.fsre.habittracker.model.UserProfile;
 import android.animation.ValueAnimator;
+import android.content.Intent;
 
 public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.ViewHolder> {
 
@@ -64,6 +65,7 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
 
         int finalPoints = (int) user.getPoints();
 
+
         ValueAnimator animator = ValueAnimator.ofInt(0, finalPoints);
         animator.setDuration(1000);
         animator.addUpdateListener(animation -> {
@@ -81,6 +83,14 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
         } else {
             holder.imgAvatar.setImageResource(R.drawable.ic_default_profile);
         }
+
+
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(v.getContext(), UserProfileActivity.class);
+            intent.putExtra("user_data", user);
+            v.getContext().startActivity(intent);
+        });
+
     }
 
     @Override
