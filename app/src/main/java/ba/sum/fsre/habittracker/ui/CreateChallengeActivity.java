@@ -5,6 +5,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.TextInputEditText;
+
 import ba.sum.fsre.habittracker.R;
 import ba.sum.fsre.habittracker.model.Challenge;
 import ba.sum.fsre.habittracker.repo.ChallengeRepository;
@@ -12,6 +16,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import java.time.LocalDate;
+
 
 public class CreateChallengeActivity extends AppCompatActivity {
 
@@ -24,9 +29,9 @@ public class CreateChallengeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_challenge);
 
-        etTitle = findViewById(R.id.etTitle);
-        etDesc = findViewById(R.id.etDescription);
-        btnCreate = findViewById(R.id.btnCreate);
+        TextInputEditText edtTitle = findViewById(R.id.edtChallengeTitle);
+        TextInputEditText edtDescription = findViewById(R.id.edtChallengeDescription);
+        MaterialButton btnCreate = findViewById(R.id.btnCreateChallenge);
         repository = new ChallengeRepository(this);
 
         btnCreate.setOnClickListener(v -> {
