@@ -9,6 +9,14 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nova navika"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="24dp"/>
+
         <EditText
             android:id="@+id/edtTitle"
             android:layout_width="match_parent"
@@ -22,12 +30,6 @@
             android:hint="Opis"
             android:minLines="3"
             android:gravity="top"
-            android:layout_marginTop="12dp"/>
-
-        <Spinner
-            android:id="@+id/spFrequency"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:layout_marginTop="12dp"/>
 
         <Button

@@ -1,10 +1,8 @@
 package ba.sum.fsre.habittracker.ui;
 
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,7 +17,6 @@ import retrofit2.Response;
 public class AddHabitActivity extends AppCompatActivity {
 
     private EditText edtTitle, edtDescription;
-    private Spinner spFrequency;
     private HabitRepository repository;
 
     @Override
@@ -31,23 +28,15 @@ public class AddHabitActivity extends AppCompatActivity {
 
         edtTitle = findViewById(R.id.edtTitle);
         edtDescription = findViewById(R.id.edtDescription);
-        spFrequency = findViewById(R.id.spFrequency);
+
         Button btnCreate = findViewById(R.id.btnCreateHabit);
 
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-                this,
-                R.array.habit_frequencies,
-                android.R.layout.simple_spinner_item
-        );
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spFrequency.setAdapter(adapter);
 
         btnCreate.setOnClickListener(v -> {
             String title = edtTitle.getText().toString().trim();
             String desc = edtDescription.getText().toString().trim();
-            String freq = spFrequency.getSelectedItem() != null
-                    ? spFrequency.getSelectedItem().toString()
-                    : "SVAKI DAN";
+
+            String freq = "Daily";
 
             if (title.isEmpty()) {
                 edtTitle.setError("Naslov je obavezan");
