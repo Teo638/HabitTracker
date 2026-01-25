@@ -1,5 +1,6 @@
     package ba.sum.fsre.habittracker.ui;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -21,6 +22,7 @@ import java.util.List;
 import ba.sum.fsre.habittracker.R;
 import ba.sum.fsre.habittracker.model.UserProfile;
 import ba.sum.fsre.habittracker.repo.UserProfileRepository;
+import ba.sum.fsre.habittracker.utils.SessionManager;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -38,6 +40,8 @@ public class EditProfileActivity extends AppCompatActivity {
     private UserProfile currentUser;
 
     private byte[] selectedImageBytes;
+    private Button btnDeleteAccount;
+    private SessionManager sessionManager;
 
     private final ActivityResultLauncher<String> pickImageLauncher = registerForActivityResult(
             new ActivityResultContracts.GetContent(),
@@ -57,6 +61,7 @@ public class EditProfileActivity extends AppCompatActivity {
         etUsername = findViewById(R.id.etUsername);
         etBio = findViewById(R.id.etBio);
         btnSaveProfile = findViewById(R.id.btnSaveProfile);
+        btnDeleteAccount = findViewById(R.id.btnDeleteAccount);
         progressBar = findViewById(R.id.progressBar);
 
 
@@ -64,11 +69,60 @@ public class EditProfileActivity extends AppCompatActivity {
 
         repository = new UserProfileRepository(this);
 
+        sessionManager = new SessionManager(this);
+
         imgEditAvatar.setOnClickListener(v -> pickImageLauncher.launch("image/*"));
 
         loadCurrentProfile();
 
         btnSaveProfile.setOnClickListener(v -> saveProfile());
+        btnDeleteAccount.setOnClickListener(v -> {
+            new androidx.appcompat.app.AlertDialog.Builder(this)
+                    .setTitle("Brisanje profila")
+                    .setMessage("Jeste li sigurni da želite trajno obrisati profil? Sve vaše navike će biti izbrisane.")
+                    .setPositiveButton("Obriši", (dialog, which) -> {
+                        deleteProfile();
+                    })
+                    .setNegativeButton("Odustani", null)
+                    .show();
+        });
+    }
+
+    private void deleteProfile() {
+        progressBar.setVisibility(View.VISIBLE);
+        btnDeleteAccount.setEnabled(false);
+
+        repository.deleteUserAccount(new retrofit2.Callback<Void>() {
+            @Override
+            public void onResponse(retrofit2.Call<Void> call, retrofit2.Response<Void> response) {
+                runOnUiThread(() -> {
+                    progressBar.setVisibility(View.GONE);
+                    if (response.isSuccessful()) {
+                        Toast.makeText(EditProfileActivity.this, "Račun uspješno obrisan.", Toast.LENGTH_LONG).show();
+
+
+                        sessionManager.clearSession();
+
+                        Intent intent = new Intent(EditProfileActivity.this, LoginActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        btnDeleteAccount.setEnabled(true);
+                        Toast.makeText(EditProfileActivity.this, "Greška pri brisanju: " + response.code(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<Void> call, Throwable t) {
+                runOnUiThread(() -> {
+                    progressBar.setVisibility(View.GONE);
+                    btnDeleteAccount.setEnabled(true);
+                    Toast.makeText(EditProfileActivity.this, "Mrežna greška: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+            }
+        });
     }
 
     private byte[] uriToBytes(Uri uri) {

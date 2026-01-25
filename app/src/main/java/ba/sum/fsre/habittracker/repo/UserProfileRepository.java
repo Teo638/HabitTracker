@@ -98,6 +98,11 @@ public class UserProfileRepository {
             }
         });
     }
+    public void deleteUserAccount(final Callback<Void> callback) {
+        String token = "Bearer " + sessionManager.getToken();
+        String queryId = "eq." + sessionManager.getUserId();
 
+        api.deleteProfile(token, API_KEY, queryId).enqueue(callback);
+    }
 
 }

@@ -37,6 +37,13 @@ public interface SupabaseDataApi {
             @Body UserProfile profile
     );
 
+    @DELETE("profiles")
+    Call<Void> deleteProfile(
+            @Header("Authorization") String token,
+            @Header("apikey") String apiKey,
+            @Query("id") String queryId
+    );
+
     @retrofit2.http.GET("challenges")
     retrofit2.Call<java.util.List<Challenge>> getAllChallenges(
             @retrofit2.http.Header("Authorization") String token,
