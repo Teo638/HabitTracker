@@ -50,6 +50,7 @@
         <activity android:name=".ui.ChallengeDetailsActivity"/>
         <activity android:name=".ui.AddHabitActivity" />
         <activity android:name=".ui.HabitDetailsActivity" />
+        <activity android:name=".ui.UserProfileActivity" />
 
         <meta-data
             android:name="preloaded_fonts"
