@@ -51,6 +51,9 @@
         <activity android:name=".ui.AddHabitActivity" />
         <activity android:name=".ui.HabitDetailsActivity" />
 
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
 
 
     </application>

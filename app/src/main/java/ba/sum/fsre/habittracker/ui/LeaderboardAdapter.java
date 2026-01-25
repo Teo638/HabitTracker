@@ -1,5 +1,7 @@
 package ba.sum.fsre.habittracker.ui;
 
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +14,7 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 import ba.sum.fsre.habittracker.R;
 import ba.sum.fsre.habittracker.model.UserProfile;
+import android.animation.ValueAnimator;
 
 public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.ViewHolder> {
 
@@ -34,33 +37,39 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
         UserProfile user = users.get(position);
 
 
-        holder.tvRank.setText("#" + (position + 1));
-
-        int colorResId;
         if (position == 0) {
-            colorResId = R.color.gold;
-            holder.tvRank.setTextSize(22);
+            holder.tvRank.setText("🥇");
+            holder.tvRank.setTextSize(24);
         } else if (position == 1) {
-            colorResId = R.color.silver;
-            holder.tvRank.setTextSize(20);
+            holder.tvRank.setText("🥈");
+            holder.tvRank.setTextSize(22);
         } else if (position == 2) {
-            colorResId = R.color.bronze;
-            holder.tvRank.setTextSize(20);
+            holder.tvRank.setText("🥉");
+            holder.tvRank.setTextSize(22);
         } else {
-            colorResId = R.color.rank_default;
-            holder.tvRank.setTextSize(18);
+            holder.tvRank.setText( (position + 1) + ".");
+            holder.tvRank.setTextSize(16);
+            holder.tvRank.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.rank_default));
+            holder.tvRank.setBackground(null);
         }
 
-
-        holder.tvRank.setTextColor(holder.itemView.getContext().getResources().getColor(colorResId));
-
+        if (position <= 2) {
+            holder.tvRank.setBackground(null);
+        }
 
         String displayName = (user.getUsername() != null && !user.getUsername().isEmpty())
                 ? user.getUsername()
                 : "Korisnik";
         holder.tvUsername.setText(displayName);
 
-        holder.tvPoints.setText(user.getPoints() + " XP");
+        int finalPoints = (int) user.getPoints();
+
+        ValueAnimator animator = ValueAnimator.ofInt(0, finalPoints);
+        animator.setDuration(1000);
+        animator.addUpdateListener(animation -> {
+            holder.tvPoints.setText(animation.getAnimatedValue().toString() + " XP");
+        });
+        animator.start();
 
 
         if (user.getAvatarUrl() != null && !user.getAvatarUrl().isEmpty()) {

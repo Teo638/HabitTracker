@@ -3,43 +3,50 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <RelativeLayout
-        android:id="@+id/topBar"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@color/white"
-        android:elevation="4dp"
+    android:layout_height="match_parent"
+    android:background="@color/soft_white">
+    <LinearLayout
+    android:id="@+id/topBar"
+    android:layout_width="match_parent"
+    android:layout_height="65dp"
+    android:background="@color/primary_orange"
+    android:orientation="horizontal"
         android:paddingHorizontal="16dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        android:elevation="6dp"
+    android:gravity="center_vertical"
+    app:layout_constraintTop_toTopOf="parent">
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/imgProfile"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_centerVertical="true"
-            android:src="@drawable/ic_default_profile"
-            app:civ_border_width="1dp"
-            app:civ_border_color="#CCCCCC"/>
+
+    <ImageView
+        android:id="@+id/imgAppLogo"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:src="@drawable/calendar_check_24dp_1f1f1f_fill0_wght400_grad0_opsz24"
+        app:tint="#000000" />
 
         <TextView
             android:id="@+id/tvAppTitle"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
+            android:layout_weight="1"
+            android:layout_marginStart="12dp"
+            android:fontFamily="@font/lobster"
             android:text="HabitTracker"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="@color/black"/>
+            android:textColor="#000000"
+            android:textSize="24sp" />
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imgProfile"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:src="@drawable/ic_default_profile"
+            app:civ_border_width="1dp"
+            app:civ_border_color="#000000"/>
 
-    </RelativeLayout>
+</LinearLayout>
 
     <FrameLayout
         android:id="@+id/fragmentContainer"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintTop_toBottomOf="@id/topBar"
         app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
@@ -50,11 +57,22 @@
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?android:attr/windowBackground"
-        app:menu="@menu/bottom_nav_menu"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/bg_bottom_navigation"
+        app:elevation="8dp"
         app:labelVisibilityMode="labeled"
+        app:itemIconTint="@color/primary_orange"
+        app:itemTextColor="@color/black"
+        app:itemRippleColor="@color/primary_orange_light"
+        android:layout_gravity="bottom"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:itemIconSize="24dp"
+        app:menu="@menu/bottom_nav_menu"
+
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
