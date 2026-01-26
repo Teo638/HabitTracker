@@ -127,6 +127,9 @@ public class HabitsFragment extends Fragment {
                     List<String> habitIds = new ArrayList<>();
                     for (Habit h : habits) habitIds.add(h.getId());
 
+                    String searchStart = today.minusDays(365).toString();
+                    String searchEnd = today.toString();
+
                     loadWeeklyLogs(habitIds);
 
                 } else {
@@ -184,24 +187,17 @@ public class HabitsFragment extends Fragment {
 
                 if (response.isSuccessful()) {
 
-                    userProfileRepository.getMyProfile(new Callback<List<UserProfile>>() {
+                    userProfileRepository.addPoints(10, new Callback<Void>() {
                         @Override
-                        public void onResponse(Call<List<UserProfile>> call, Response<List<UserProfile>> response) {
-                            if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
-                                UserProfile profile = response.body().get(0);
-                                profile.setPoints(profile.getPoints() + 10);
-                                userProfileRepository.updateMyProfile(profile, new Callback<Void>() {
-                                    @Override public void onResponse(Call<Void> c, Response<Void> r) {}
-                                    @Override public void onFailure(Call<Void> c, Throwable t) {}
-                                });
-                            }
-                        }
-                        @Override public void onFailure(Call<List<UserProfile>> call, Throwable t) {}
+                        public void onResponse(Call<Void> call, Response<Void> response) {}
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) {}
                     });
 
-                    loadHabitsAndWeeklyLogs();
+                    Toast.makeText(getContext(), "+10 XP!", Toast.LENGTH_SHORT).show();
+                        loadHabitsAndWeeklyLogs();
 
-                } else {
+                    } else {
                     Toast.makeText(getContext(), "Greška check-in: " + response.code(), Toast.LENGTH_SHORT).show();
                 }
             }
@@ -219,6 +215,7 @@ public class HabitsFragment extends Fragment {
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
                     loadHabitsAndWeeklyLogs();
+                    Toast.makeText(getContext(), "Navika obrisana", Toast.LENGTH_SHORT).show();
                 }
             }
 

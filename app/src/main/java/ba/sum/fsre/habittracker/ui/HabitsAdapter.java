@@ -155,9 +155,15 @@ public class HabitsAdapter extends RecyclerView.Adapter<HabitsAdapter.HabitViewH
         int streak = 0;
         LocalDate cursor = today;
 
-        while (!cursor.isBefore(weekStart)) {
-            if (doneDates.contains(cursor.toString())) streak++;
-            else break;
+
+        if (doneDates.contains(cursor.toString())) {
+            streak++;
+        }
+
+        cursor = cursor.minusDays(1);
+
+        while (doneDates.contains(cursor.toString())) {
+            streak++;
             cursor = cursor.minusDays(1);
         }
         return streak;

@@ -60,7 +60,7 @@
                     android:id="@+id/imgFire"
                     android:layout_width="18dp"
                     android:layout_height="18dp"
-                    android:src="@android:drawable/btn_star_big_on"
+                    android:src="@drawable/ic_fire"
                     app:tint="#FFA500"
                     android:contentDescription="Streak"/>
 
