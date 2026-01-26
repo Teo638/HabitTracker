@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
@@ -20,6 +22,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import ba.sum.fsre.habittracker.R;
 import ba.sum.fsre.habittracker.model.Habit;
@@ -42,10 +45,8 @@ public class HabitsFragment extends Fragment {
     private LocalDate weekEnd;
 
     private RecyclerView recyclerView;
-    private View imgEmpty;
-    private View tvEmptyState;
-
-
+    private ImageView imgEmpty;
+    private TextView tvEmptyState;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -54,12 +55,11 @@ public class HabitsFragment extends Fragment {
         habitRepository = new HabitRepository(requireContext());
         userProfileRepository = new UserProfileRepository(requireContext());
 
+        imgEmpty = view.findViewById(R.id.imgEmpty);
+        tvEmptyState = view.findViewById(R.id.tvEmptyState);
 
         recyclerView = view.findViewById(R.id.recyclerHabits);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-        imgEmpty = view.findViewById(R.id.imgEmpty);
-        tvEmptyState = view.findViewById(R.id.tvEmptyState);
 
         adapter = new HabitsAdapter(new HabitsAdapter.OnHabitActionListener() {
             @Override
@@ -99,8 +99,6 @@ public class HabitsFragment extends Fragment {
         tvEmptyState.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
     }
 
-
-
     private void loadHabitsAndWeeklyLogs() {
         today = LocalDate.now();
         weekStart = today.with(DayOfWeek.MONDAY);
@@ -116,42 +114,39 @@ public class HabitsFragment extends Fragment {
                     List<Habit> habits = response.body();
                     adapter.setHabits(habits);
 
-
                     updateEmptyState(habits);
                     if (habits.isEmpty()) {
                         adapter.setWeeklyDone(new HashMap<>());
                         return;
                     }
 
-
                     List<String> habitIds = new ArrayList<>();
                     for (Habit h : habits) habitIds.add(h.getId());
 
-                    loadWeeklyLogs(habitIds);
+                    String searchStart = today.minusDays(365).toString();
+                    String searchEnd = today.toString();
+
+                    loadWeeklyLogs(habitIds, searchStart, searchEnd);
 
                 } else {
-
                     adapter.setHabits(new ArrayList<>());
                     adapter.setWeeklyDone(new HashMap<>());
                     updateEmptyState(new ArrayList<>());
-
                 }
             }
 
             @Override
             public void onFailure(Call<List<Habit>> call, Throwable t) {
                 t.printStackTrace();
-
                 adapter.setHabits(new ArrayList<>());
                 adapter.setWeeklyDone(new HashMap<>());
                 updateEmptyState(new ArrayList<>());
-
             }
         });
     }
 
-    private void loadWeeklyLogs(List<String> habitIds) {
-        habitRepository.getWeeklyLogs(habitIds, weekStart.toString(), weekEnd.toString(),
+    private void loadWeeklyLogs(List<String> habitIds, String startDate, String endDate) {
+        habitRepository.getWeeklyLogs(habitIds, startDate, endDate,
                 new Callback<List<HabitLog>>() {
                     @Override
                     public void onResponse(Call<List<HabitLog>> call, Response<List<HabitLog>> response) {
@@ -184,21 +179,14 @@ public class HabitsFragment extends Fragment {
 
                 if (response.isSuccessful()) {
 
-                    userProfileRepository.getMyProfile(new Callback<List<UserProfile>>() {
+                    userProfileRepository.addPoints(10, new Callback<Void>() {
                         @Override
-                        public void onResponse(Call<List<UserProfile>> call, Response<List<UserProfile>> response) {
-                            if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
-                                UserProfile profile = response.body().get(0);
-                                profile.setPoints(profile.getPoints() + 10);
-                                userProfileRepository.updateMyProfile(profile, new Callback<Void>() {
-                                    @Override public void onResponse(Call<Void> c, Response<Void> r) {}
-                                    @Override public void onFailure(Call<Void> c, Throwable t) {}
-                                });
-                            }
-                        }
-                        @Override public void onFailure(Call<List<UserProfile>> call, Throwable t) {}
+                        public void onResponse(Call<Void> call, Response<Void> response) {}
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) {}
                     });
 
+                    Toast.makeText(getContext(), "+10 XP!", Toast.LENGTH_SHORT).show();
                     loadHabitsAndWeeklyLogs();
 
                 } else {
@@ -219,6 +207,7 @@ public class HabitsFragment extends Fragment {
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
                     loadHabitsAndWeeklyLogs();
+                    Toast.makeText(getContext(), "Navika obrisana", Toast.LENGTH_SHORT).show();
                 }
             }
 
