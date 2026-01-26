@@ -81,7 +81,6 @@ public class HabitsAdapter extends RecyclerView.Adapter<HabitsAdapter.HabitViewH
         Set<String> doneDates = weeklyDone.get(habit.getId());
         if (doneDates == null) doneDates = new HashSet<>();
 
-
         paintWeek(holder, doneDates, habit);
 
         int streak = computeStreak(doneDates);
@@ -121,20 +120,17 @@ public class HabitsAdapter extends RecyclerView.Adapter<HabitsAdapter.HabitViewH
         return habits.size();
     }
 
-    
     private void paintWeek(HabitViewHolder holder, Set<String> doneDates, Habit habit) {
         TextView[] circles = new TextView[]{
                 holder.dayMon, holder.dayTue, holder.dayWed, holder.dayThu,
                 holder.dayFri, holder.daySat, holder.daySun
         };
 
-
         LocalDate createdDate = parseCreatedDate(habit != null ? habit.getCreatedAt() : null);
 
         for (int i = 0; i < 7; i++) {
             LocalDate d = weekStart.plusDays(i);
             String ds = d.toString();
-
 
             if (createdDate != null && d.isBefore(createdDate)) {
                 tintCircle(circles[i], "#C9C9C9");
@@ -145,8 +141,10 @@ public class HabitsAdapter extends RecyclerView.Adapter<HabitsAdapter.HabitViewH
                 tintCircle(circles[i], "#34C759");
             } else if (d.isBefore(today)) {
                 tintCircle(circles[i], "#FF3B30");
+            } else if (d.isEqual(today)) {
+                tintCircle(circles[i], "#808080");
             } else {
-                tintCircle(circles[i], "#777777");
+                tintCircle(circles[i], "#333333");
             }
         }
     }
@@ -159,16 +157,10 @@ public class HabitsAdapter extends RecyclerView.Adapter<HabitsAdapter.HabitViewH
             streak++;
         }
 
-
         cursor = cursor.minusDays(1);
 
-
-        while (!cursor.isBefore(weekStart)) {
-            if (doneDates.contains(cursor.toString())) {
-                streak++;
-            } else {
-                break;
-            }
+        while (doneDates.contains(cursor.toString())) {
+            streak++;
             cursor = cursor.minusDays(1);
         }
         return streak;
@@ -186,11 +178,9 @@ public class HabitsAdapter extends RecyclerView.Adapter<HabitsAdapter.HabitViewH
         }
     }
 
-
     private LocalDate parseCreatedDate(String createdAt) {
         if (createdAt == null || createdAt.isEmpty()) return null;
         try {
-
             if (createdAt.length() >= 10) {
                 return LocalDate.parse(createdAt.substring(0, 10));
             }
@@ -199,7 +189,6 @@ public class HabitsAdapter extends RecyclerView.Adapter<HabitsAdapter.HabitViewH
             return null;
         }
     }
-
 
     static class HabitViewHolder extends RecyclerView.ViewHolder {
 
