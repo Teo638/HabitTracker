@@ -62,12 +62,6 @@
                 android:inputType="textMultiLine" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <Spinner
-            android:id="@+id/spFrequency"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"/>
-
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnCreateHabit"
             android:layout_width="match_parent"
