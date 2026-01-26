@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="primary_orange">#FF8C42</color>
+    <color name="app_accent">@color/primary_orange</color>
+    <color name="gold">#FFD700</color>
+
+
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#AAAAAA</color>
+    <color name="card_background">#1E1E1E</color>
+    <color name="bio_background">#1E1E1E</color>
+</resources>
